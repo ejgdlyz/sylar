@@ -1,0 +1,4 @@
+/home/lambda/workspace/sylar/build/CMakeFiles/sylar.dir
+/home/lambda/workspace/sylar/build/CMakeFiles/test.dir
+/home/lambda/workspace/sylar/build/CMakeFiles/edit_cache.dir
+/home/lambda/workspace/sylar/build/CMakeFiles/rebuild_cache.dir
