@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/lambda/workspace/sylar/sylar/log.cc" "CMakeFiles/sylar.dir/sylar/log.cc.o" "gcc" "CMakeFiles/sylar.dir/sylar/log.cc.o.d"
+  "/home/lambda/workspace/sylar/sylar/util.cc" "CMakeFiles/sylar.dir/sylar/util.cc.o" "gcc" "CMakeFiles/sylar.dir/sylar/util.cc.o.d"
   )
 
 # Targets to which this target links.

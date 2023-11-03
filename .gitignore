@@ -31,3 +31,5 @@ depcomp
 
 tests/my_test.cpp
 tests/my_test
+bin/test
+bin/log.txt

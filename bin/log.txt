@@ -1,1 +1,2 @@
-2023-11-02 23:48:33 [ERROR] </home/lambda/workspace/sylar/tests/test.cc 9>  
+2023-11-03 19:32:22	ERROR	sstream ERROR test micro
+2023-11-03 19:32:22	ERROR	fmt ERROR: test macro  aa
