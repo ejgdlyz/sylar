@@ -178,7 +178,6 @@ CMakeFiles/test.dir/tests/test.cc.o: \
  /usr/include/c++/11/bits/stl_tree.h /usr/include/c++/11/bits/stl_map.h \
  /usr/include/c++/11/bits/stl_multimap.h \
  /usr/include/c++/11/bits/erase_if.h \
- /home/lambda/workspace/sylar/./sylar/singleton.h \
  /home/lambda/workspace/sylar/./sylar/util.h /usr/include/unistd.h \
  /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
@@ -190,4 +189,6 @@ CMakeFiles/test.dir/tests/test.cc.o: \
  /usr/include/x86_64-linux-gnu/sys/syscall.h \
  /usr/include/x86_64-linux-gnu/asm/unistd.h \
  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
- /usr/include/x86_64-linux-gnu/bits/syscall.h
+ /usr/include/x86_64-linux-gnu/bits/syscall.h \
+ /home/lambda/workspace/sylar/./sylar/singleton.h \
+ /home/lambda/workspace/sylar/./sylar/util.h

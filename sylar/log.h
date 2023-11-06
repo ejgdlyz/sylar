@@ -7,8 +7,9 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
-#include <stdarg.h>
+#include <cstdarg>
 #include <map>
+#include "util.h"
 #include "singleton.h"
 
 // 流式宏
@@ -35,6 +36,7 @@
 #define SYLAR_LOG_FMT_ERROR(logger, fmt, ...) SYLAR_LOG_FTM_LEVEL(logger, sylar::LogLevel::ERROR, fmt, __VA_ARGS__)
 #define SYLAR_LOG_FMT_FATAL(logger, fmt, ...) SYLAR_LOG_FTM_LEVEL(logger, sylar::LogLevel::FATAL, fmt, __VA_ARGS__)
 
+#define SYLAR_LOG_ROOT() sylar::LoggerMgr::GetInstance()->getRoot()
 
 namespace sylar {
 
@@ -199,10 +201,11 @@ public:
     LoggerManager();
     Logger::ptr getLogger(const std::string& name);
 
-    void init();  // 可以从配置读 logger 配置
+    void init();                                    // 可以从配置读 logger 配置
+    Logger::ptr getRoot() const { return m_root;} 
 private:
     std::map<std::string, Logger::ptr> m_loggers;
-    Logger::ptr m_root;  // 默认 logger
+    Logger::ptr m_root;                             // 默认 logger
 };
 
 typedef sylar::Singleton<LoggerManager> LoggerMgr;

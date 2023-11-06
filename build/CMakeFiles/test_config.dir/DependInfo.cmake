@@ -8,13 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/lambda/workspace/sylar/sylar/config.cc" "CMakeFiles/sylar.dir/sylar/config.cc.o" "gcc" "CMakeFiles/sylar.dir/sylar/config.cc.o.d"
-  "/home/lambda/workspace/sylar/sylar/log.cc" "CMakeFiles/sylar.dir/sylar/log.cc.o" "gcc" "CMakeFiles/sylar.dir/sylar/log.cc.o.d"
-  "/home/lambda/workspace/sylar/sylar/util.cc" "CMakeFiles/sylar.dir/sylar/util.cc.o" "gcc" "CMakeFiles/sylar.dir/sylar/util.cc.o.d"
+  "/home/lambda/workspace/sylar/tests/test_config.cc" "CMakeFiles/test_config.dir/tests/test_config.cc.o" "gcc" "CMakeFiles/test_config.dir/tests/test_config.cc.o.d"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
+  "/home/lambda/workspace/sylar/build/CMakeFiles/sylar.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

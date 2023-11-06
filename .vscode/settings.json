@@ -53,7 +53,10 @@
         "ratio": "cpp",
         "semaphore": "cpp",
         "stop_token": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "strstream": "cpp",
+        "cstring": "cpp",
+        "cinttypes": "cpp"
     },
     "cmake.configureOnOpen": true
 }

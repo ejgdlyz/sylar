@@ -224,6 +224,11 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
   /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/c++/11/map \
+  /usr/include/c++/11/bits/stl_tree.h \
+  /usr/include/c++/11/bits/stl_map.h \
+  /usr/include/c++/11/bits/stl_multimap.h \
+  /usr/include/c++/11/bits/erase_if.h \
   ../sylar/util.h \
   /usr/include/unistd.h \
   /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
@@ -236,7 +241,9 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
   /usr/include/x86_64-linux-gnu/sys/syscall.h \
   /usr/include/x86_64-linux-gnu/asm/unistd.h \
   /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
-  /usr/include/x86_64-linux-gnu/bits/syscall.h
+  /usr/include/x86_64-linux-gnu/bits/syscall.h \
+  ../sylar/singleton.h \
+  ../sylar/util.h
 
 
 /usr/include/x86_64-linux-gnu/asm/unistd.h:
@@ -250,6 +257,10 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/x86_64-linux-gnu/bits/posix_opt.h:
 
 ../sylar/util.h:
+
+/usr/include/c++/11/bits/erase_if.h:
+
+/usr/include/c++/11/bits/stl_map.h:
 
 /usr/include/c++/11/bits/vector.tcc:
 
@@ -306,6 +317,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/c++/11/bits/basic_ios.tcc:
 
 /usr/include/c++/11/bits/locale_facets.tcc:
+
+../sylar/singleton.h:
 
 /usr/include/c++/11/bits/list.tcc:
 
@@ -435,6 +448,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
+/usr/include/c++/11/map:
+
 /usr/include/c++/11/bits/range_access.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
@@ -500,6 +515,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/FILE.h:
+
+/usr/include/c++/11/bits/stl_multimap.h:
 
 /usr/include/features.h:
 
@@ -570,6 +587,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/c++/11/bits/stl_tree.h:
 
 /usr/include/c++/11/tuple:
 

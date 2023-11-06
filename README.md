@@ -20,7 +20,13 @@
    - Logger    定义日志类别（系统级日志、业务级日志）
    - Formatter 日志格式
    - Appendder 日志输出地（控制台、文件）
-2.  
+
+## 配置系统 
+- Config  --> Yaml
+- ConfigVarBase: 基类
+- ConfigVar : public ConfigVarBase 实例化类
+- Config 管理类 
+
 ## 协程库封装
 
 ## socket 函数库
@@ -30,5 +36,3 @@
 ## 分布式协议
 
 ## 推荐系统
-
-## 
