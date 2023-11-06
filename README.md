@@ -23,9 +23,19 @@
 
 ## 配置系统 
 - Config  --> Yaml
-- ConfigVarBase: 基类
-- ConfigVar : public ConfigVarBase 实例化类
-- Config 管理类 
+- 基础版本
+  - ConfigVarBase: 基类
+  - ConfigVar : public ConfigVarBase 实例化类
+  - Config 管理类 
+
+- 安装 yaml-cpp
+   ```git
+   git clone https://github.com/jbeder/yaml-cpp.git
+
+   cd yaml-cpp && mkdir build && cd build && cmake .. && make && sudo make install
+   ```
+- 配置原则 ： 约定优于配置
+
 
 ## 协程库封装
 

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <boost/lexical_cast.hpp>  // 类型转化
+#include <yaml-cpp/yaml.h>
 #include "sylar/log.h"
 
 namespace sylar {
@@ -15,7 +16,7 @@ public:
     ConfigVarBase(const std::string& name, const std::string& description = "") 
         : m_name(name)
         , m_description(description) {
-        
+        std::transform(m_name.begin(), m_name.end(), m_name.begin(), ::tolower);  // key 转为小写
     }
     virtual ~ConfigVarBase() {}
 
@@ -81,7 +82,7 @@ public:
             SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists.";
             return tmp;
         }
-        if (name.find_first_not_of("abcdefghigklmnopqrstuvwxyz.012345678_ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        if (name.find_first_not_of("abcdefghigklmnopqrstuvwxyz.012345678_")
                 != std::string::npos) {
             SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "Lookuped name invalid: " << name;
 
@@ -101,6 +102,10 @@ public:
         }
         return std::dynamic_pointer_cast<ConfigVar<T>>(it->second);                 // ConfigVarBase -> ConfigVar<T>
     } 
+
+    static void loadFromYaml(const YAML::Node& root);
+
+    static ConfigVarBase::ptr LookupBase(const std::string& name);
 private:
     static ConfigValMap s_data;
 };

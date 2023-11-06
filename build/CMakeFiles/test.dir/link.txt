@@ -1,1 +1,1 @@
-/usr/bin/c++  -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -rdynamic CMakeFiles/test.dir/tests/test.cc.o -o ../bin/test  -Wl,-rpath,/home/lambda/workspace/sylar/lib ../lib/libsylar.so 
+/usr/bin/c++  -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -rdynamic CMakeFiles/test.dir/tests/test.cc.o -o ../bin/test   -L/usr/local/lib  -Wl,-rpath,/usr/local/lib:/home/lambda/workspace/sylar/lib ../lib/libsylar.so /usr/local/lib/libyaml-cpp.a 

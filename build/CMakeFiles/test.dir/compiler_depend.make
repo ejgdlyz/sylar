@@ -224,6 +224,7 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
   /usr/include/c++/11/bits/stl_vector.h \
   /usr/include/c++/11/bits/stl_bvector.h \
   /usr/include/c++/11/bits/vector.tcc \
+  /usr/include/c++/11/cstdarg \
   /usr/include/c++/11/map \
   /usr/include/c++/11/bits/stl_tree.h \
   /usr/include/c++/11/bits/stl_map.h \
@@ -387,6 +388,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/c++/11/bits/shared_ptr.h:
 
 /usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+/usr/include/c++/11/cstdarg:
 
 /usr/include/c++/11/ext/aligned_buffer.h:
 

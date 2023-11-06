@@ -56,7 +56,9 @@
         "thread": "cpp",
         "strstream": "cpp",
         "cstring": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "set": "cpp",
+        "valarray": "cpp"
     },
     "cmake.configureOnOpen": true
 }
