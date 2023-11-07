@@ -2,7 +2,7 @@
 #include "sylar/log.h"
 #include <yaml-cpp/yaml.h>
 
-
+#if 0
 sylar::ConfigVar<int>::ptr g_int_value_config  = 
     sylar::Config::Lookup("system.port", (int)8080, "system port");
 
@@ -34,6 +34,7 @@ sylar::ConfigVar<std::map<std::string, int>>::ptr g_str_int_map_value_config =
 
 sylar::ConfigVar<std::unordered_map<std::string, int>>::ptr g_str_int_umap_value_config = 
     sylar::Config::Lookup("system.str_int_umap", std::unordered_map<std::string, int>{{"k",2}}, "system str int umap");
+
 
 void print_yaml(const YAML::Node& node, int level) {
     if (node.IsScalar()) {                                                  // 简单类型 
@@ -110,7 +111,7 @@ void test_config() {
     XX_M(g_str_int_map_value_config, str_int_map, after);
     XX_M(g_str_int_umap_value_config, str_int_umap, before);
 }
-
+#endif
 struct Person {
     std::string m_name;
     int m_age = 0;
@@ -123,6 +124,10 @@ struct Person {
             << " sex = " << m_sex
             << "]";
         return ss.str();
+    }
+
+    bool operator==(const Person& rhs) const {
+        return m_name == rhs.m_name && m_age == rhs.m_age && m_sex == rhs.m_sex;
     }
 };
 
@@ -138,6 +143,7 @@ public:
         p.m_sex = node["sex"].as<bool>();
         return p;
     }
+
 };
 
 template<>
@@ -178,7 +184,11 @@ void test_class () {
 
     XX_PM(g_person_map, "class.map before");
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "before: " << g_person_vec_map->toString();
-
+    
+    g_person->addListener(10, [](const Person& old_value, const Person& new_value){
+        SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "old_value=" << old_value.toString()
+                << ", new_value=" << new_value.toString();
+    });
 
     YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/log.yml");  
     sylar::Config::loadFromYaml(root);
