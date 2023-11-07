@@ -13,7 +13,7 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
-
+#include <functional>
 
 namespace sylar {
 
@@ -32,6 +32,7 @@ public:
 
     virtual std::string toString() = 0;
     virtual bool fromString(const std::string& val) = 0;  // 解析，初始化成员 
+    virtual std::string getTypeName() const = 0;
 protected:
     std::string m_name;
     std::string m_description;
@@ -264,13 +265,15 @@ public:
             return true;
         } catch (std::exception& e) {
             SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "ConfigVar::fromString exception" 
-                << e.what() << ", failed to convert: string to " << typeid(m_val).name();
+                    << e.what() << ", failed to convert: string to " << typeid(m_val).name()
+                    << " - " << val;
         }
         return false;
     }
 
     const T getValue() const { return m_val;}
     void setValue(const T& v) { m_val = v;}
+    std::string getTypeName() const override{ return typeid(T).name();}
 private:
     T m_val;
 };
@@ -279,16 +282,26 @@ private:
 class Config {
 public:
     typedef std::unordered_map<std::string, ConfigVarBase::ptr> ConfigValMap;
-
     
     template <class T>
     static typename ConfigVar<T>::ptr Lookup(const std::string& name,     // 定义时赋值,没有则创建
         const T& default_value, const std::string& description = "") {
-        auto tmp = Lookup<T>(name);
-        if (tmp) {
-            SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists.";
-            return tmp;
+        // auto tmp = Lookup<T>(name);
+        auto it = s_data.find(name);
+        
+        if (it != s_data.end()) {
+            auto tmp = std::dynamic_pointer_cast<ConfigVar<T>> (it->second);
+            if (tmp) {
+                SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists.";
+                return tmp;
+            } else {
+                SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists, but type is not "
+                        << typeid(T).name() << ". Real type = " << it->second->getTypeName()
+                        << " " << it->second->toString();
+                return nullptr;
+            }
         }
+        
         if (name.find_first_not_of("abcdefghigklmnopqrstuvwxyz.012345678_")
                 != std::string::npos) {
             SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "Lookuped name invalid: " << name;
