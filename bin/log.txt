@@ -1,2 +1,2 @@
-2023-11-03 23:55:54	ERROR	sstream ERROR test micro
-2023-11-03 23:55:54	ERROR	fmt ERROR: test macro  aa
+2023-11-07 11:24:46	ERROR	sstream ERROR test micro
+2023-11-07 11:24:46	ERROR	fmt ERROR: test macro  aa

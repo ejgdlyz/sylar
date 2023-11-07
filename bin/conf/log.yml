@@ -20,3 +20,14 @@ system:
     int_vec:
         - 10
         - 30
+    int_list: [200, 300, 400]
+    int_set: [700, 500, 600, 700]
+    int_uset: [700, 500, 600, 700]
+    str_int_map:
+        k: 30
+        k2: 20
+        k3: 10
+    str_int_umap:
+        k: 300
+        k2: 200
+        k3: 100

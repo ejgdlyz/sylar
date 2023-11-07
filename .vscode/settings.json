@@ -58,7 +58,8 @@
         "cstring": "cpp",
         "cinttypes": "cpp",
         "set": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "unordered_set": "cpp"
     },
     "cmake.configureOnOpen": true
 }
