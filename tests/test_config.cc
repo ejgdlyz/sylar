@@ -1,6 +1,7 @@
 #include "sylar/config.h"
 #include "sylar/log.h"
 #include <yaml-cpp/yaml.h>
+#include <iostream>
 
 #if 0
 sylar::ConfigVar<int>::ptr g_int_value_config  = 
@@ -60,7 +61,7 @@ void print_yaml(const YAML::Node& node, int level) {
 }
 
 void test_yaml() {
-    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/log.yml");
+    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/test.yml");
 
     // SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << root;
     print_yaml(root, 0);
@@ -97,7 +98,7 @@ void test_config() {
     XX_M(g_str_int_umap_value_config, str_int_umap, before);
 
 
-    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/log.yml");  
+    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/test.yml");  
     sylar::Config::loadFromYaml(root);
 
     // 通过文件名加载后的值
@@ -112,6 +113,7 @@ void test_config() {
     XX_M(g_str_int_umap_value_config, str_int_umap, before);
 }
 #endif
+
 struct Person {
     std::string m_name;
     int m_age = 0;
@@ -160,7 +162,8 @@ public:
     }
 };
 
-}
+}  // namespace sylar
+
 sylar::ConfigVar<Person>::ptr g_person = 
     sylar::Config::Lookup("class.person", Person(), "system person");
 
@@ -185,17 +188,38 @@ void test_class () {
     XX_PM(g_person_map, "class.map before");
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "before: " << g_person_vec_map->toString();
     
-    g_person->addListener(10, [](const Person& old_value, const Person& new_value){
+    g_person->addListener(10, [](const Person& old_value, const Person& new_value) {  // 回调函数测试 
         SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "old_value=" << old_value.toString()
                 << ", new_value=" << new_value.toString();
     });
 
-    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/log.yml");  
+    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/test.yml");  
     sylar::Config::loadFromYaml(root);
 
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "after: " << g_person->getValue().toString() <<" - " << g_person->toString();
     XX_PM(g_person_map, "class.map after");
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "after: " << g_person_vec_map->toString();
+
+}
+
+void test_logger_config() {
+
+    static sylar::Logger::ptr system_log = SYLAR_LOG_NAME("system");  // 申请一个 system logger, 此时没有加载 log.yml, 使用默认 root 日志
+    SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;
+
+    std::cout << sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;
+    
+    YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/log.yml");
+    sylar::Config::loadFromYaml(root);  // 触发配置变化 -> 事件 -> logger 初始化  
+
+    std::cout << "====================================================" << std::endl;
+    std::cout << sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;
+
+    // std::cout << "====================================================" << std::endl;
+    // std::cout << root << std::endl;
+    
+    SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;
+
 
 }
 
@@ -212,7 +236,9 @@ int main(int argc, char const *argv[])
 
     // test_config();
 
-    test_class();
+    // test_class();
+
+    test_logger_config();
 
     return 0;
 }

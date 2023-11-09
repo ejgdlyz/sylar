@@ -2,11 +2,11 @@
 
 namespace sylar {
 
-Config::ConfigValMap Config::s_data;    
+// Config::ConfigVarMap Config::s_data;    
 
 ConfigVarBase::ptr Config::LookupBase(const std::string& name) {  // 查找当前命名的项
-    auto it = s_data.find(name);
-    return it == s_data.end() ? nullptr : it->second;
+    auto it = GetData().find(name);
+    return it == GetData().end() ? nullptr : it->second;
 }
 
 /*

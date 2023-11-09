@@ -280,7 +280,7 @@ public:
             return;
         
         for (auto& cb_pair: m_cbs) {
-            cb_pair.second(m_val, v);
+            cb_pair.second(m_val, v);  // operator()(m_val, v) 回调函数调用
         }
         
         m_val = v;
@@ -313,15 +313,15 @@ private:
 // 管理类
 class Config {
 public:
-    typedef std::unordered_map<std::string, ConfigVarBase::ptr> ConfigValMap;
+    typedef std::unordered_map<std::string, ConfigVarBase::ptr> ConfigVarMap;
     
     template <class T>
     static typename ConfigVar<T>::ptr Lookup(const std::string& name,     // 定义时赋值,没有则创建
         const T& default_value, const std::string& description = "") {
         // auto tmp = Lookup<T>(name);
-        auto it = s_data.find(name);
+        auto it = GetData().find(name);
         
-        if (it != s_data.end()) {
+        if (it != GetData().end()) {
             auto tmp = std::dynamic_pointer_cast<ConfigVar<T>> (it->second);
             if (tmp) {
                 SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists.";
@@ -342,14 +342,14 @@ public:
         }
 
         typename ConfigVar<T>::ptr v(new ConfigVar<T>(name, default_value, description));
-        s_data[name] = v;
+        GetData()[name] = v;
         return v;
     }
 
     template <class T>
     static typename ConfigVar<T>::ptr Lookup(const std::string& name ) {            // 直接查找
-        auto it = s_data.find(name);
-        if (it == s_data.end()) {
+        auto it = GetData().find(name);
+        if (it == GetData().end()) {
             return nullptr;
         }
         return std::dynamic_pointer_cast<ConfigVar<T>>(it->second);                 // ConfigVarBase -> ConfigVar<T>
@@ -359,7 +359,10 @@ public:
 
     static ConfigVarBase::ptr LookupBase(const std::string& name);
 private:
-    static ConfigValMap s_data;
+    static ConfigVarMap& GetData() {
+        static ConfigVarMap s_data;
+        return s_data;
+    }
 };
 } // namespace sylar
 
