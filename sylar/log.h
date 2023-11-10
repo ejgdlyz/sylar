@@ -137,6 +137,7 @@ private:
 
 // 日志输出地
 class LogAppender {
+    friend class Logger;
 public:
     typedef std::shared_ptr<LogAppender> ptr;
     virtual ~LogAppender() {}
@@ -145,7 +146,7 @@ public:
 
     virtual std::string toYamlString() = 0;
 
-    void setFormatter(LogFormatter::ptr formatter) {m_formatter = formatter;}
+    void setFormatter(LogFormatter::ptr formatter);
     LogFormatter::ptr getFormatter() const {return m_formatter;}
 
     LogLevel::Level getLevel() const { return m_level;}
@@ -153,6 +154,7 @@ public:
 protected:
     LogLevel::Level m_level = LogLevel::DEBUG;
     LogFormatter::ptr m_formatter;
+    bool m_hasFormatter = false;               // 默认没有 formatter
 };
 
 
@@ -209,7 +211,7 @@ public:
     typedef std::shared_ptr<FileLogAppender> ptr;
     FileLogAppender(const std::string& filename);
     void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override; 
-    bool reopen();  // 重新打开文件，成功返回 true
+    bool reopen();                      // 重新打开文件，成功返回 true
     std::string toYamlString() override;
 private:
     std::string m_filename;

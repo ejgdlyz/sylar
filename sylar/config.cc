@@ -37,8 +37,8 @@ void Config::loadFromYaml(const YAML::Node& root) {
     std::list<std::pair<std::string, const YAML::Node>> all_nodes;
     ListAllMember("", root, all_nodes);  // 层级结构打平
 
-    for (auto& node: all_nodes) {
-        std::string key = node.first;
+    for (auto& p_node: all_nodes) {     // p_node -> pair_node 
+        std::string key = p_node.first;
         if (key.empty()) {
             continue;
 
@@ -48,11 +48,11 @@ void Config::loadFromYaml(const YAML::Node& root) {
         ConfigVarBase::ptr var = LookupBase(key);
 
         if (var) {
-            if (node.second.IsScalar()) {    // string
-                var->fromString(node.second.Scalar());
+            if (p_node.second.IsScalar()) {    // string
+                var->fromString(p_node.second.Scalar());
             } else {
                 std::stringstream ss;
-                ss << node.second;
+                ss << p_node.second;
                 var->fromString(ss.str());
             }
         }

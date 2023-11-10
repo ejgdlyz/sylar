@@ -31,6 +31,12 @@ depcomp
 
 tests/my_test.cpp
 tests/my_test
-bin/test
-bin/log.txt
 bin/test_config
+bin/test
+
+bin/log.txt
+bin/root.txt
+bin/system.txt
+
+
+.git-old

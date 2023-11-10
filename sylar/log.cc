@@ -250,7 +250,8 @@ LogFormatter::ptr Logger::getFormatter() {
 
 void Logger::addAppender(LogAppender::ptr appender) {
     if (!appender->getFormatter()) {
-        appender->setFormatter(m_formatter);  // 保证每个都有 formatter(default)
+        appender->m_formatter = m_formatter;  // 保证每个都有 formatter(default)
+        // 不改 LogAppender 标志位 m_hasFormatter
     }
     m_appenders.push_back(appender);
 }
@@ -305,8 +306,17 @@ void Logger::fatal(LogEvent::ptr event) {
 
 }
 
+void LogAppender::setFormatter(LogFormatter::ptr formatter) {
+    m_formatter = formatter;
+    if (m_formatter) {
+        m_hasFormatter = true;
+    } else {
+        m_hasFormatter = false;
+    }
+}
+
 FileLogAppender::FileLogAppender(const std::string& filename)
-    : m_filename(filename) {
+        : m_filename(filename) {
     reopen();
 }
 
@@ -323,7 +333,7 @@ std::string FileLogAppender::toYamlString() {
     if (m_level != LogLevel::UNKNOWN) {
         node["level"] = LogLevel::ToString(m_level);
     }
-    if (m_formatter) {
+    if (m_hasFormatter && m_formatter) {    // m_formatter 不是默认值 && 非空
         node["formatter"] = m_formatter->getPattern(); 
     }
     std::stringstream ss;
@@ -351,7 +361,7 @@ std::string StdoutLogAppender::toYamlString() {
     if (m_level != LogLevel::UNKNOWN) {
         node["level"] = LogLevel::ToString(m_level);
     }
-    if (m_formatter) {
+    if (m_hasFormatter && m_formatter) {                // m_formatter 不是默认值 && 非空
         node["formatter"] = m_formatter->getPattern(); 
     }
     std::stringstream ss;
@@ -506,8 +516,8 @@ Logger::ptr LoggerManager::getLogger(const std::string& name) {
 
 std::string LoggerManager::toYamlString() {
     YAML::Node node;
-    for (auto& logger : m_loggers) {
-        node.push_back(YAML::Load(logger.second->toYamlString()));
+    for (auto& p_logger : m_loggers) {      // p_logger -> pair_logger
+        node.push_back(YAML::Load(p_logger.second->toYamlString()));
     }
     std::stringstream ss;
     ss << node;
@@ -552,7 +562,7 @@ template<>
 class LexicalCast<std::string, std::set<LogDefine>> {
 public:
     std::set<LogDefine> operator() (const std::string& v) {
-        YAML::Node node = YAML::Load(v);  // string -> YAML node
+        YAML::Node node = YAML::Load(v);  // string -> std::set<LogDefine>
         std::set<LogDefine> vec; 
         for (size_t i = 0; i < node.size(); ++i) {  // 为数组则解析，否则抛异常并捕获
             auto n = node[i];

@@ -204,13 +204,13 @@ void test_class () {
 
 void test_logger_config() {
 
-    static sylar::Logger::ptr system_log = SYLAR_LOG_NAME("system");  // 申请一个 system logger, 此时没有加载 log.yml, 使用默认 root 日志
-    SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;
+    static sylar::Logger::ptr system_log = SYLAR_LOG_NAME("system");   // 申请一个 system logger, 此时没有加载 log.yml, 
+    SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;     // 所以，新建的 system logger 使用默认的 formatter 和 StdoutLogAppender， 解析和输出日志内容
 
-    std::cout << sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;
+    std::cout << sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;   // 输出目前所有 logger 配置
     
     YAML::Node root = YAML::LoadFile("/home/lambda/workspace/sylar/bin/conf/log.yml");
-    sylar::Config::loadFromYaml(root);  // 触发配置变化 -> 事件 -> logger 初始化  
+    sylar::Config::loadFromYaml(root);          // 触发配置变化 -> 事件 -> logger 初始化  
 
     std::cout << "====================================================" << std::endl;
     std::cout << sylar::LoggerMgr::GetInstance()->toYamlString() << std::endl;
