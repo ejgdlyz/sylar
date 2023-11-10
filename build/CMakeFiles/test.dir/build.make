@@ -76,15 +76,15 @@ CMakeFiles/test.dir/tests/test.cc.o: CMakeFiles/test.dir/flags.make
 CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc
 CMakeFiles/test.dir/tests/test.cc.o: CMakeFiles/test.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lambda/workspace/sylar/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test.dir/tests/test.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test.dir/tests/test.cc.o -MF CMakeFiles/test.dir/tests/test.cc.o.d -o CMakeFiles/test.dir/tests/test.cc.o -c /home/lambda/workspace/sylar/tests/test.cc
+	/usr/bin/c++ $(CXX_DEFINES) -D__FILE__=\"tests/test.cc\" $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test.dir/tests/test.cc.o -MF CMakeFiles/test.dir/tests/test.cc.o.d -o CMakeFiles/test.dir/tests/test.cc.o -c /home/lambda/workspace/sylar/tests/test.cc
 
 CMakeFiles/test.dir/tests/test.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test.dir/tests/test.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lambda/workspace/sylar/tests/test.cc > CMakeFiles/test.dir/tests/test.cc.i
+	/usr/bin/c++ $(CXX_DEFINES) -D__FILE__=\"tests/test.cc\" $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lambda/workspace/sylar/tests/test.cc > CMakeFiles/test.dir/tests/test.cc.i
 
 CMakeFiles/test.dir/tests/test.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test.dir/tests/test.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lambda/workspace/sylar/tests/test.cc -o CMakeFiles/test.dir/tests/test.cc.s
+	/usr/bin/c++ $(CXX_DEFINES) -D__FILE__=\"tests/test.cc\" $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lambda/workspace/sylar/tests/test.cc -o CMakeFiles/test.dir/tests/test.cc.s
 
 # Object files for target test
 test_OBJECTS = \

@@ -1,2 +1,4 @@
-2023-11-10 15:54:55	[INFO]	hello system log
+2023-11-10 20:29:30	[INFO]	hello system log
+
+2023-11-10 20:29:42	[INFO]	hello system log
 

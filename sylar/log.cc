@@ -211,6 +211,12 @@ Logger::Logger(const std::string& name, LogLevel::Level level)
 
 void Logger::setFormatter(LogFormatter::ptr formatter) {
     m_formatter = formatter;
+
+    for (auto& appender : m_appenders) {
+        if (!appender->m_hasFormatter) {
+            appender->m_formatter = m_formatter;
+        }
+    }
 }
 
 void Logger::setFormatter(const std::string& pattern) {
@@ -221,7 +227,9 @@ void Logger::setFormatter(const std::string& pattern) {
                     << std::endl;
         return;
     }
-    m_formatter = formatter;
+    // m_formatter = formatter;
+    setFormatter(formatter);
+    
 }   
 
 std::string Logger::toYamlString() {
@@ -707,7 +715,7 @@ struct LogIniter {
                     if (!appender_d.formatter.empty()) {  // appender 下的 Formatter
                         LogFormatter::ptr fmt(new LogFormatter(appender_d.formatter));
                         if (!fmt->isError()) {
-                            ap->setFormatter(fmt);
+                            ap->setFormatter(fmt);         // 覆盖旧的 formatter, 设置 m_hasFromatter
                         } else {
                             std::cout << "log.name = " << new_val.name << ", appender type = " << appender_d.type
                                     << ", formatter = " << appender_d.formatter << ", is invalid" << std::endl; 

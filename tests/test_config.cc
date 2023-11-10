@@ -220,6 +220,8 @@ void test_logger_config() {
     
     SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;
 
+    system_log->setFormatter("%d - %m%n");
+    SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;
 
 }
 

@@ -76,15 +76,15 @@ CMakeFiles/test_config.dir/tests/test_config.cc.o: CMakeFiles/test_config.dir/fl
 CMakeFiles/test_config.dir/tests/test_config.cc.o: ../tests/test_config.cc
 CMakeFiles/test_config.dir/tests/test_config.cc.o: CMakeFiles/test_config.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lambda/workspace/sylar/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_config.dir/tests/test_config.cc.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_config.dir/tests/test_config.cc.o -MF CMakeFiles/test_config.dir/tests/test_config.cc.o.d -o CMakeFiles/test_config.dir/tests/test_config.cc.o -c /home/lambda/workspace/sylar/tests/test_config.cc
+	/usr/bin/c++ $(CXX_DEFINES) -D__FILE__=\"tests/test_config.cc\" $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_config.dir/tests/test_config.cc.o -MF CMakeFiles/test_config.dir/tests/test_config.cc.o.d -o CMakeFiles/test_config.dir/tests/test_config.cc.o -c /home/lambda/workspace/sylar/tests/test_config.cc
 
 CMakeFiles/test_config.dir/tests/test_config.cc.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_config.dir/tests/test_config.cc.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lambda/workspace/sylar/tests/test_config.cc > CMakeFiles/test_config.dir/tests/test_config.cc.i
+	/usr/bin/c++ $(CXX_DEFINES) -D__FILE__=\"tests/test_config.cc\" $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lambda/workspace/sylar/tests/test_config.cc > CMakeFiles/test_config.dir/tests/test_config.cc.i
 
 CMakeFiles/test_config.dir/tests/test_config.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_config.dir/tests/test_config.cc.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lambda/workspace/sylar/tests/test_config.cc -o CMakeFiles/test_config.dir/tests/test_config.cc.s
+	/usr/bin/c++ $(CXX_DEFINES) -D__FILE__=\"tests/test_config.cc\" $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lambda/workspace/sylar/tests/test_config.cc -o CMakeFiles/test_config.dir/tests/test_config.cc.s
 
 # Object files for target test_config
 test_config_OBJECTS = \
