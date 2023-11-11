@@ -195,4 +195,4 @@ CMakeFiles/test.dir/tests/test.cc.o: \
  /home/lambda/workspace/sylar/./sylar/thread.h \
  /usr/include/c++/11/functional /usr/include/c++/11/bits/std_function.h \
  /usr/include/semaphore.h /usr/include/x86_64-linux-gnu/bits/semaphore.h \
- /home/lambda/workspace/sylar/./sylar/util.h
+ /usr/include/c++/11/atomic /home/lambda/workspace/sylar/./sylar/util.h

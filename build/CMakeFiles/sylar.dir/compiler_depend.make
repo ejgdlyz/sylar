@@ -993,6 +993,7 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/include/c++/11/bits/std_function.h \
   /usr/include/semaphore.h \
   /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+  /usr/include/c++/11/atomic \
   /usr/include/c++/11/iostream \
   /usr/include/string.h \
   /usr/include/strings.h \
@@ -1469,7 +1470,6 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/local/include/yaml-cpp/node/detail/node_iterator.h \
   /usr/local/include/yaml-cpp/node/iterator.h \
   /usr/local/include/yaml-cpp/node/detail/iterator.h \
-  /usr/include/c++/11/atomic \
   /usr/local/include/yaml-cpp/node/convert.h \
   /usr/include/c++/11/unordered_map \
   /usr/include/c++/11/bits/hashtable.h \
@@ -1682,6 +1682,7 @@ CMakeFiles/sylar.dir/sylar/thread.cc.o: ../sylar/thread.cc \
   /usr/include/c++/11/bits/basic_string.tcc \
   /usr/include/semaphore.h \
   /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+  /usr/include/c++/11/atomic \
   ../sylar/log.h \
   /usr/include/c++/11/list \
   /usr/include/c++/11/bits/stl_list.h \

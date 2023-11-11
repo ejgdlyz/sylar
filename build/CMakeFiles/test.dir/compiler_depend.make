@@ -249,6 +249,7 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
   /usr/include/c++/11/bits/std_function.h \
   /usr/include/semaphore.h \
   /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+  /usr/include/c++/11/atomic \
   ../sylar/util.h
 
 
@@ -443,6 +444,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/c++/11/typeinfo:
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
+
+/usr/include/c++/11/atomic:
 
 /usr/include/semaphore.h:
 

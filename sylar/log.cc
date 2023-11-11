@@ -344,6 +344,11 @@ FileLogAppender::FileLogAppender(const std::string& filename)
 
 void FileLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
     if (level >= m_level){
+        uint64_t now = time(0);
+        if (now != m_lastTime) {
+            reopen(); 
+            m_lastTime = now; 
+        }
         MutexType::Lock lock(m_mutex);
         m_filestream << m_formatter->format(logger, level, event);
     }
