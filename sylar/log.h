@@ -11,6 +11,7 @@
 #include <map>
 #include "util.h"
 #include "singleton.h"
+#include "thread.h"
 
 // 流式宏
 #define SYLAR_LOG_LEVEL(logger, level) \
@@ -140,6 +141,8 @@ class LogAppender {
     friend class Logger;
 public:
     typedef std::shared_ptr<LogAppender> ptr;
+    typedef Mutex MutexType;
+
     virtual ~LogAppender() {}
 
     virtual void log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) = 0; 
@@ -147,7 +150,7 @@ public:
     virtual std::string toYamlString() = 0;
 
     void setFormatter(LogFormatter::ptr formatter);
-    LogFormatter::ptr getFormatter() const {return m_formatter;}
+    LogFormatter::ptr getFormatter() const;
 
     LogLevel::Level getLevel() const { return m_level;}
     void setLevel(LogLevel::Level level) {m_level = level;}
@@ -155,6 +158,7 @@ protected:
     LogLevel::Level m_level = LogLevel::DEBUG;
     LogFormatter::ptr m_formatter;
     bool m_hasFormatter = false;               // 默认没有 formatter
+    mutable MutexType m_mutex;
 };
 
 
@@ -163,7 +167,8 @@ class Logger : public std::enable_shared_from_this<Logger> {
 friend class LoggerManager;
 public:
     typedef std::shared_ptr<Logger> ptr;
-    
+    typedef Mutex MutexType;
+
     Logger(const std::string& name = "root", LogLevel::Level level = LogLevel::DEBUG);
 
     void log(LogLevel::Level level, LogEvent::ptr event); 
@@ -194,6 +199,8 @@ private:
     std::list<LogAppender::ptr> m_appenders;    // Appender 集合
     LogFormatter::ptr m_formatter;              // 直接使用 formatter
     Logger::ptr m_root;                         // root Log
+
+    MutexType m_mutex;
 };
 
 // 输出到控制台的 Appender
@@ -221,6 +228,8 @@ private:
 // 日志管理器：管理所有的 Logger
 class LoggerManager {
 public:
+    typedef Mutex MutexType;
+
     LoggerManager();
     Logger::ptr getLogger(const std::string& name);
 
@@ -230,6 +239,7 @@ public:
 private:
     std::map<std::string, Logger::ptr> m_loggers;
     Logger::ptr m_root;                             // 默认 logger
+    MutexType m_mutex;
 };
 
 typedef sylar::Singleton<LoggerManager> LoggerMgr;

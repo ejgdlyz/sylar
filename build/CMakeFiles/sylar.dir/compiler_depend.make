@@ -734,6 +734,15 @@ CMakeFiles/sylar.dir/sylar/config.cc.o: ../sylar/config.cc \
   /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
   /usr/include/x86_64-linux-gnu/bits/syscall.h \
   ../sylar/singleton.h \
+  ../sylar/thread.h \
+  /usr/include/c++/11/thread \
+  /usr/include/c++/11/bits/std_thread.h \
+  /usr/include/c++/11/bits/this_thread_sleep.h \
+  /usr/include/c++/11/chrono \
+  /usr/include/c++/11/ratio \
+  /usr/include/c++/11/bits/parse_numbers.h \
+  /usr/include/semaphore.h \
+  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
   /usr/include/c++/11/unordered_set \
   /usr/include/c++/11/bits/unordered_set.h
 
@@ -971,9 +980,20 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
   /usr/include/x86_64-linux-gnu/bits/syscall.h \
   ../sylar/singleton.h \
-  /usr/include/c++/11/iostream \
+  ../sylar/thread.h \
+  /usr/include/c++/11/thread \
+  /usr/include/c++/11/bits/std_thread.h \
+  /usr/include/c++/11/bits/this_thread_sleep.h \
+  /usr/include/c++/11/chrono \
+  /usr/include/c++/11/ratio \
+  /usr/include/c++/11/limits \
+  /usr/include/c++/11/ctime \
+  /usr/include/c++/11/bits/parse_numbers.h \
   /usr/include/c++/11/functional \
   /usr/include/c++/11/bits/std_function.h \
+  /usr/include/semaphore.h \
+  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+  /usr/include/c++/11/iostream \
   /usr/include/string.h \
   /usr/include/strings.h \
   ../sylar/config.h \
@@ -1266,7 +1286,6 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/local/include/boost/concept/detail/concept_undef.hpp \
   /usr/local/include/boost/iterator/iterator_concepts.hpp \
   /usr/local/include/boost/limits.hpp \
-  /usr/include/c++/11/limits \
   /usr/include/c++/11/algorithm \
   /usr/include/c++/11/bits/stl_algo.h \
   /usr/include/c++/11/bits/algorithmfwd.h \
@@ -1407,7 +1426,6 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/include/c++/11/cstring \
   /usr/include/c++/11/locale \
   /usr/include/c++/11/bits/locale_facets_nonio.h \
-  /usr/include/c++/11/ctime \
   /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h \
   /usr/include/libintl.h \
@@ -1809,6 +1827,10 @@ CMakeFiles/sylar.dir/sylar/util.cc.o: ../sylar/util.cc \
 
 ../sylar/util.cc:
 
+../sylar/thread.cc:
+
+../sylar/log.cc:
+
 /usr/include/semaphore.h:
 
 /usr/include/c++/11/ratio:
@@ -1820,10 +1842,6 @@ CMakeFiles/sylar.dir/sylar/util.cc.o: ../sylar/util.cc \
 /usr/include/c++/11/bits/std_thread.h:
 
 /usr/include/c++/11/thread:
-
-../sylar/thread.cc:
-
-../sylar/log.cc:
 
 /usr/include/x86_64-linux-gnu/bits/syscall.h:
 

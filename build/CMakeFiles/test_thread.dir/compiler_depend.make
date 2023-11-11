@@ -735,9 +735,6 @@ CMakeFiles/test_thread.dir/tests/test_thread.cc.o: ../tests/test_thread.cc \
   /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
   /usr/include/x86_64-linux-gnu/bits/syscall.h \
   ../sylar/singleton.h \
-  /usr/include/c++/11/unordered_set \
-  /usr/include/c++/11/bits/unordered_set.h \
-  ../sylar/singleton.h \
   ../sylar/thread.h \
   /usr/include/c++/11/thread \
   /usr/include/c++/11/bits/std_thread.h \
@@ -747,8 +744,11 @@ CMakeFiles/test_thread.dir/tests/test_thread.cc.o: ../tests/test_thread.cc \
   /usr/include/c++/11/bits/parse_numbers.h \
   /usr/include/semaphore.h \
   /usr/include/x86_64-linux-gnu/bits/semaphore.h \
-  ../sylar/util.h \
-  /usr/include/c++/11/iostream
+  /usr/include/c++/11/unordered_set \
+  /usr/include/c++/11/bits/unordered_set.h \
+  ../sylar/singleton.h \
+  ../sylar/thread.h \
+  ../sylar/util.h
 
 
 /usr/include/semaphore.h:
@@ -1158,8 +1158,6 @@ CMakeFiles/test_thread.dir/tests/test_thread.cc.o: ../tests/test_thread.cc \
 /usr/include/alloca.h:
 
 /usr/local/include/boost/mpl/placeholders.hpp:
-
-/usr/include/c++/11/iostream:
 
 /usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 

@@ -244,8 +244,15 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
   /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
   /usr/include/x86_64-linux-gnu/bits/syscall.h \
   ../sylar/singleton.h \
+  ../sylar/thread.h \
+  /usr/include/c++/11/functional \
+  /usr/include/c++/11/bits/std_function.h \
+  /usr/include/semaphore.h \
+  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
   ../sylar/util.h
 
+
+../sylar/thread.h:
 
 /usr/include/x86_64-linux-gnu/asm/unistd.h:
 
@@ -437,6 +444,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 
 /usr/include/x86_64-linux-gnu/bits/cpu-set.h:
 
+/usr/include/semaphore.h:
+
 /usr/include/c++/11/bits/exception_defines.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h:
@@ -507,9 +516,13 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 
 /usr/include/c++/11/ios:
 
+/usr/include/c++/11/functional:
+
 /usr/include/asm-generic/errno-base.h:
 
 /usr/include/c++/11/bits/char_traits.h:
+
+/usr/include/c++/11/bits/std_function.h:
 
 /usr/include/c++/11/bits/allocator.h:
 
@@ -576,6 +589,8 @@ CMakeFiles/test.dir/tests/test.cc.o: ../tests/test.cc \
 /usr/include/c++/11/bits/exception_ptr.h:
 
 /usr/include/c++/11/ext/string_conversions.h:
+
+/usr/include/x86_64-linux-gnu/bits/semaphore.h:
 
 /usr/include/c++/11/exception:
 

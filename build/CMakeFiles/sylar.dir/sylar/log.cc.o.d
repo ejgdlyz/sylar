@@ -191,8 +191,14 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: \
  /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
  /usr/include/x86_64-linux-gnu/bits/syscall.h \
  /home/lambda/workspace/sylar/sylar/singleton.h \
- /usr/include/c++/11/iostream /usr/include/c++/11/functional \
- /usr/include/c++/11/bits/std_function.h /usr/include/string.h \
+ /home/lambda/workspace/sylar/sylar/thread.h /usr/include/c++/11/thread \
+ /usr/include/c++/11/bits/std_thread.h \
+ /usr/include/c++/11/bits/this_thread_sleep.h /usr/include/c++/11/chrono \
+ /usr/include/c++/11/ratio /usr/include/c++/11/limits \
+ /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h \
+ /usr/include/c++/11/functional /usr/include/c++/11/bits/std_function.h \
+ /usr/include/semaphore.h /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+ /usr/include/c++/11/iostream /usr/include/string.h \
  /usr/include/strings.h /home/lambda/workspace/sylar/sylar/config.h \
  /usr/local/include/boost/lexical_cast.hpp \
  /usr/local/include/boost/config.hpp \
@@ -480,8 +486,8 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: \
  /usr/local/include/boost/preprocessor/seq/limits/enum_256.hpp \
  /usr/local/include/boost/concept/detail/concept_undef.hpp \
  /usr/local/include/boost/iterator/iterator_concepts.hpp \
- /usr/local/include/boost/limits.hpp /usr/include/c++/11/limits \
- /usr/include/c++/11/algorithm /usr/include/c++/11/bits/stl_algo.h \
+ /usr/local/include/boost/limits.hpp /usr/include/c++/11/algorithm \
+ /usr/include/c++/11/bits/stl_algo.h \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/uniform_int_dist.h \
@@ -615,7 +621,7 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: \
  /usr/local/include/boost/move/detail/std_ns_end.hpp \
  /usr/local/include/boost/lexical_cast/detail/converter_lexical_streams.hpp \
  /usr/include/c++/11/cstring /usr/include/c++/11/locale \
- /usr/include/c++/11/bits/locale_facets_nonio.h /usr/include/c++/11/ctime \
+ /usr/include/c++/11/bits/locale_facets_nonio.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h \
  /usr/include/libintl.h /usr/include/c++/11/bits/locale_facets_nonio.tcc \

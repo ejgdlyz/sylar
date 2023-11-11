@@ -734,10 +734,31 @@ CMakeFiles/test_config.dir/tests/test_config.cc.o: ../tests/test_config.cc \
   /usr/include/x86_64-linux-gnu/asm/unistd_64.h \
   /usr/include/x86_64-linux-gnu/bits/syscall.h \
   ../sylar/singleton.h \
+  ../sylar/thread.h \
+  /usr/include/c++/11/thread \
+  /usr/include/c++/11/bits/std_thread.h \
+  /usr/include/c++/11/bits/this_thread_sleep.h \
+  /usr/include/c++/11/chrono \
+  /usr/include/c++/11/ratio \
+  /usr/include/c++/11/bits/parse_numbers.h \
+  /usr/include/semaphore.h \
+  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
   /usr/include/c++/11/unordered_set \
   /usr/include/c++/11/bits/unordered_set.h \
   /usr/include/c++/11/iostream
 
+
+/usr/include/semaphore.h:
+
+/usr/include/c++/11/ratio:
+
+/usr/include/c++/11/chrono:
+
+/usr/include/c++/11/bits/this_thread_sleep.h:
+
+/usr/include/c++/11/bits/std_thread.h:
+
+/usr/include/c++/11/thread:
 
 /usr/include/x86_64-linux-gnu/bits/syscall.h:
 
@@ -1022,6 +1043,8 @@ CMakeFiles/test_config.dir/tests/test_config.cc.o: ../tests/test_config.cc \
 /usr/local/include/boost/iterator/iterator_traits.hpp:
 
 /usr/local/include/boost/range/functions.hpp:
+
+/usr/include/c++/11/bits/parse_numbers.h:
 
 /usr/local/include/boost/assert.hpp:
 
@@ -1633,6 +1656,8 @@ CMakeFiles/test_config.dir/tests/test_config.cc.o: ../tests/test_config.cc \
 
 /usr/local/include/boost/range/mutable_iterator.hpp:
 
+/usr/include/x86_64-linux-gnu/bits/semaphore.h:
+
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
 
 /usr/local/include/yaml-cpp/noexcept.h:
@@ -1870,6 +1895,8 @@ CMakeFiles/test_config.dir/tests/test_config.cc.o: ../tests/test_config.cc \
 /usr/local/include/boost/mpl/aux_/config/ttp.hpp:
 
 /usr/local/include/boost/preprocessor/arithmetic/detail/maximum_number.hpp:
+
+../sylar/thread.h:
 
 /usr/include/assert.h:
 

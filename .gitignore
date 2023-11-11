@@ -37,6 +37,6 @@ bin/test
 bin/log.txt
 bin/root.txt
 bin/system.txt
-
+bin/logger_mutex.txt
 
 .git-old
