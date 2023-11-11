@@ -14,3 +14,5 @@ CXX_FLAGS =  -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-u
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/config.cc.o_DEFINES = __FILE__="sylar/config.cc"
 
+# Custom defines: CMakeFiles/sylar.dir/sylar/thread.cc.o_DEFINES = __FILE__="sylar/thread.cc"
+
