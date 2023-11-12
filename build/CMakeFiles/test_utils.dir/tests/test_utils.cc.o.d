@@ -1,21 +1,22 @@
-CMakeFiles/test_thread.dir/tests/test_thread.cc.o: \
- /home/lambda/workspace/sylar/tests/test_thread.cc \
- /usr/include/stdc-predef.h /home/lambda/workspace/sylar/./sylar/sylar.h \
- /home/lambda/workspace/sylar/./sylar/macro.h /usr/include/string.h \
- /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
- /usr/include/features.h /usr/include/features-time64.h \
+CMakeFiles/test_utils.dir/tests/test_utils.cc.o: \
+ /home/lambda/workspace/sylar/tests/test_utils.cc \
+ /usr/include/stdc-predef.h /usr/include/assert.h /usr/include/features.h \
+ /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
  /usr/include/x86_64-linux-gnu/bits/timesize.h \
  /usr/include/x86_64-linux-gnu/sys/cdefs.h \
  /usr/include/x86_64-linux-gnu/bits/long-double.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs.h \
  /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /home/lambda/workspace/sylar/./sylar/sylar.h \
+ /home/lambda/workspace/sylar/./sylar/macro.h /usr/include/string.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
- /usr/include/strings.h /usr/include/assert.h \
- /home/lambda/workspace/sylar/./sylar/util.h /usr/include/pthread.h \
- /usr/include/sched.h /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/strings.h /home/lambda/workspace/sylar/./sylar/util.h \
+ /usr/include/pthread.h /usr/include/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
  /usr/include/x86_64-linux-gnu/bits/typesizes.h \
  /usr/include/x86_64-linux-gnu/bits/time64.h \
  /usr/include/x86_64-linux-gnu/bits/types/time_t.h \
@@ -679,5 +680,4 @@ CMakeFiles/test_thread.dir/tests/test_thread.cc.o: \
  /usr/include/c++/11/ratio /usr/include/c++/11/bits/parse_numbers.h \
  /usr/include/semaphore.h /usr/include/x86_64-linux-gnu/bits/semaphore.h \
  /home/lambda/workspace/sylar/./sylar/thread.h \
- /home/lambda/workspace/sylar/./sylar/log.h \
- /home/lambda/workspace/sylar/./sylar/config.h
+ /home/lambda/workspace/sylar/./sylar/log.h

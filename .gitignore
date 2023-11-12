@@ -29,6 +29,10 @@ stamp-h1
 depcomp
 *.xcodeproj
 
+build/
+bin/test*
+bin/*.txt
+
 tests/my_test.cpp
 tests/my_test
 bin/test_config

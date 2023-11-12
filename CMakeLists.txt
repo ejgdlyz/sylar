@@ -44,8 +44,13 @@ target_link_libraries(test_config ${LIBS})
 
 add_executable(test_thread tests/test_thread.cc)
 add_dependencies(test_thread sylar)
-force_redefine_file_macro_for_sources(test_thread)  # redefined __FILE__ as relative path for test_config
+force_redefine_file_macro_for_sources(test_thread)  
 target_link_libraries(test_thread ${LIBS})
+
+add_executable(test_utils tests/test_utils.cc)
+add_dependencies(test_utils sylar)
+force_redefine_file_macro_for_sources(test_utils)  
+target_link_libraries(test_utils ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
