@@ -188,7 +188,7 @@ void test_class () {
     XX_PM(g_person_map, "class.map before");
     SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "before: " << g_person_vec_map->toString();
     
-    g_person->addListener(10, [](const Person& old_value, const Person& new_value) {  // 回调函数测试 
+    g_person->addListener([](const Person& old_value, const Person& new_value) {  // 回调函数测试 
         SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "old_value=" << old_value.toString()
                 << ", new_value=" << new_value.toString();
     });
@@ -224,6 +224,16 @@ void test_logger_config() {
     SYLAR_LOG_INFO(system_log) << "hello system log" << std::endl;
 
 }
+void test_config_Visit() {
+    // Config::Visit 测试
+    std::cout << "********* Config::Visit *********" << std::endl;
+    sylar::Config::Visit([](sylar::ConfigVarBase::ptr var){
+        SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "name = " << var->getName() 
+                << ", description = " << var->getDescription()
+                << ", typename = " << var->getTypeName()        // 类型
+                << ", value = " << var->toString();             // 每个类型对应的 YAML结果
+    });  
+}
 
 int main(int argc, char const *argv[])
 {
@@ -241,6 +251,8 @@ int main(int argc, char const *argv[])
     // test_class();
 
     test_logger_config();
+
+    test_config_Visit();
 
     return 0;
 }

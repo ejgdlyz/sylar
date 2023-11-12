@@ -722,6 +722,8 @@ CMakeFiles/sylar.dir/sylar/config.cc.o: ../sylar/config.cc \
   /usr/local/include/yaml-cpp/node/detail/impl.h \
   /usr/local/include/yaml-cpp/node/parse.h \
   /usr/local/include/yaml-cpp/node/emit.h \
+  /usr/include/c++/11/unordered_set \
+  /usr/include/c++/11/bits/unordered_set.h \
   ../sylar/log.h \
   /usr/include/c++/11/fstream \
   /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
@@ -743,8 +745,7 @@ CMakeFiles/sylar.dir/sylar/config.cc.o: ../sylar/config.cc \
   /usr/include/c++/11/bits/parse_numbers.h \
   /usr/include/semaphore.h \
   /usr/include/x86_64-linux-gnu/bits/semaphore.h \
-  /usr/include/c++/11/unordered_set \
-  /usr/include/c++/11/bits/unordered_set.h
+  ../sylar/thread.h
 
 CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/include/stdc-predef.h \
@@ -1489,9 +1490,10 @@ CMakeFiles/sylar.dir/sylar/log.cc.o: ../sylar/log.cc \
   /usr/local/include/yaml-cpp/node/detail/impl.h \
   /usr/local/include/yaml-cpp/node/parse.h \
   /usr/local/include/yaml-cpp/node/emit.h \
-  ../sylar/log.h \
   /usr/include/c++/11/unordered_set \
-  /usr/include/c++/11/bits/unordered_set.h
+  /usr/include/c++/11/bits/unordered_set.h \
+  ../sylar/log.h \
+  ../sylar/thread.h
 
 CMakeFiles/sylar.dir/sylar/thread.cc.o: ../sylar/thread.cc \
   /usr/include/stdc-predef.h \

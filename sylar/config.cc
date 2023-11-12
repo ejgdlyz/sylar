@@ -5,6 +5,7 @@ namespace sylar {
 // Config::ConfigVarMap Config::s_data;    
 
 ConfigVarBase::ptr Config::LookupBase(const std::string& name) {  // 查找当前命名的项
+    RWMutexType::ReadLock lock(GetMutex());
     auto it = GetData().find(name);
     return it == GetData().end() ? nullptr : it->second;
 }
@@ -48,7 +49,7 @@ void Config::loadFromYaml(const YAML::Node& root) {
         ConfigVarBase::ptr var = LookupBase(key);
 
         if (var) {
-            if (p_node.second.IsScalar()) {    // string
+            if (p_node.second.IsScalar()) {    // base type
                 var->fromString(p_node.second.Scalar());
             } else {
                 std::stringstream ss;
@@ -59,6 +60,15 @@ void Config::loadFromYaml(const YAML::Node& root) {
 
     }
 }
+
+void Config::Visit(std::function<void(ConfigVarBase::ptr)> cb) {  // 将 s_data 以 toString 方式返回
+    RWMutexType::ReadLock lock(GetMutex());
+    ConfigVarMap& m = GetData();
+    for (auto it = m.begin(); it != m.end(); ++it) {
+        cb(it->second);         // cb(ConfigVar<set<LogDefine>, LecicalCast<set<LogDefine>, stirng>>)
+    } 
+}
+
 
 
 }

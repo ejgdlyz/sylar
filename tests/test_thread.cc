@@ -80,6 +80,7 @@ void test_fun2_3() {
 
     SYLAR_LOG_INFO(g_logger) << "thread test end";
 }
+
 int main(int argc, char const *argv[]) {
 
     // test_fun1();
