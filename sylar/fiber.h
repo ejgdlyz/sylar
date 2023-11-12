@@ -1,0 +1,67 @@
+#ifndef __SYLAR_FIBER_H__
+#define __SYLAR_FIBER_H__
+
+#include <ucontext.h>
+#include <memory>
+#include <functional>
+#include "thread.h"
+
+namespace sylar {
+
+class Fiber : public std::enable_shared_from_this<Fiber> {
+public:
+    typedef std::shared_ptr<Fiber> ptr;
+    
+    enum State {                        // 协程状态
+        INIT, 
+        HOLD,
+        EXEC,
+        TREM,
+        READY, 
+        EXCEPT
+    };
+
+private:
+    /**
+     * @brief 无参构造函数
+     * @attention 每个线程第一个协程的构造
+     */
+    Fiber();
+
+public:
+    Fiber(std::function<void()> cb, size_t stackSize = 0);
+    ~Fiber();
+
+    void reset(std::function<void()> cb);   // 重置协程（INIT、TERM）函数并重置状态
+    void swapIn();                          // 切换到当前协程执行
+    void swapOut();                         // 切换到后台
+
+    uint64_t getId() const { return m_id;}
+
+public:
+    static void SetThis(Fiber* fiber);      // 设置当前协程
+    static Fiber::ptr GetThis();            // 获取当前协程
+    
+    // 协程切换到后台并设置为 Ready 状态或 Hold 状态
+    static void YieldToReady();
+    static void YieldToHold();
+
+    static uint64_t TotalFibers();          // 总协程数
+
+    static void MainFunc();
+
+    static uint64_t GetFiberId();
+
+private:
+    uint64_t m_id = 0;                  // 协程 id
+    uint32_t m_statckSize = 0;          // 栈大小
+    State m_state = INIT;               // 协程状态
+
+    ucontext_t m_ctx;                   // 
+    void* m_stack = nullptr;            // 栈内存空间
+
+    std::function<void()> m_cb;         // 协程执行函数
+};
+}
+
+#endif // __SYLAR_FIBER_H__

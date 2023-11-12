@@ -1,4 +1,0 @@
-2023-11-12 15:33:47	[INFO]	hello system log
-
-2023-11-12 15:33:47	[INFO]	hello system log
-

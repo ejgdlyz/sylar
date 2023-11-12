@@ -35,12 +35,5 @@ bin/*.txt
 
 tests/my_test.cpp
 tests/my_test
-bin/test_config
-bin/test
-
-bin/log.txt
-bin/root.txt
-bin/system.txt
-bin/logger_mutex.txt
 
 .git-old

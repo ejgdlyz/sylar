@@ -12,6 +12,7 @@ link_directories(/usr/local/lib)  # 类库
 
 set(LIB_SRC
     sylar/log.cc
+    sylar/fiber.cc
     sylar/util.cc
     sylar/config.cc
     sylar/thread.cc
@@ -51,6 +52,11 @@ add_executable(test_utils tests/test_utils.cc)
 add_dependencies(test_utils sylar)
 force_redefine_file_macro_for_sources(test_utils)  
 target_link_libraries(test_utils ${LIBS})
+
+add_executable(test_fiber tests/test_fiber.cc)
+add_dependencies(test_fiber sylar)
+force_redefine_file_macro_for_sources(test_fiber)  
+target_link_libraries(test_fiber ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

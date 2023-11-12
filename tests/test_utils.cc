@@ -10,7 +10,7 @@ void test_assert() {
 
     // SYLAR_ASSERT(false);
     
-    SYLAR_ASSERT2(0 == 1, "testing for macro with two parameters: SYLAR_ASSERT2");
+    SYLAR_ASSERT2(0 == 1, "testing macro with two parameters: SYLAR_ASSERT2");
 
 }
 int main(int argc, char const *argv[])

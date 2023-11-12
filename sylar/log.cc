@@ -699,8 +699,8 @@ public:
 
 // 全局变量 g_log_defines, main 之前
 sylar::ConfigVar<std::set<LogDefine>>::ptr g_log_defines = 
-
         sylar::Config::Lookup("logs", std::set<LogDefine>(), "logs config");
+        
 struct LogIniter {
     LogIniter() {
         g_log_defines->addListener([](const std::set<LogDefine>& old_values  // 配置变化事件触发
