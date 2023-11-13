@@ -115,6 +115,14 @@ public:
     }
 };
 
+class ThreadNameFormatterItem : public LogFormatter::FormatterItem {
+public:
+    ThreadNameFormatterItem(const std::string& str = "") {}
+    void format(std::ostream& os, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) override {
+        os << event->getThreadName();
+    }
+};
+
 class FiberIdFormatterItem : public LogFormatter::FormatterItem {
 public:
     FiberIdFormatterItem(const std::string& str = "") {}
@@ -192,11 +200,12 @@ private:
 
 
 LogEvent::LogEvent(std::shared_ptr<Logger> logger, LogLevel::Level level, const char* file, int32_t line, uint32_t elapse, 
-                        uint32_t thread_id, uint32_t fiber_id, uint64_t time)
+                        uint32_t thread_id, uint32_t fiber_id, uint64_t time, const std::string& thread_name)
     : m_file(file)
     ,m_line(line)
     ,m_elapse(elapse)
     ,m_threadId(thread_id)
+    ,m_threadName(thread_name) 
     ,m_fiberId(fiber_id)
     ,m_time(time)
     ,m_logger(logger)
@@ -206,7 +215,7 @@ LogEvent::LogEvent(std::shared_ptr<Logger> logger, LogLevel::Level level, const 
 
 Logger::Logger(const std::string& name, LogLevel::Level level) 
         :m_name(name), m_level(level) {
-    m_formatter.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));    // default 格式, LogFormatter::init() 解析该字符串
+    m_formatter.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));    // default 格式, LogFormatter::init() 解析该字符串
 }
 
 void Logger::setFormatter(LogFormatter::ptr formatter) {
@@ -493,10 +502,11 @@ void LogFormatter::init() {
         {#str, [](const std::string& fmt) { return FormatterItem::ptr( new C(fmt));}}
 
         XX(m, MessageFormatterItem),            // %m -- 消息体
-        XX(p, LevelFormatterItem),              // %p -- level
-        XX(r, ElapseFormatterItem),             // %r -- 启动后的时间
+        XX(p, LevelFormatterItem),              // %p -- 日志级别
+        XX(r, ElapseFormatterItem),             // %r -- 启动后的时间(ms)
         XX(c, NameFormatterItem),               // %c -- 日志名称
         XX(t, ThreadIdFormatterItem),           // %t -- 线程 id
+        XX(N, ThreadNameFormatterItem),         // %t -- 线程 name
         XX(n, NewLineFormatterItem),            // %n -- 回车换行
         XX(d, DateTimeFormatterItem),           // %d -- 时间
         XX(f, FilenameFormatterItem),           // %f -- 文件名

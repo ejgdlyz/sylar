@@ -8,9 +8,9 @@
 			"name": "sylar_debug",//!挑个容易识别的名字
 			"type": "cppdbg",
 			"request": "launch",
-			// "program": "${workspaceFolder}/build/tests/router",
 			// "program": "${workspaceFolder}/bin/test",
-			"program": "${workspaceFolder}/bin/test_config",
+			// "program": "${workspaceFolder}/bin/test_config",
+			"program": "${workspaceFolder}/bin/test_fiber",
 
 
 			"args": [],

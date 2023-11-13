@@ -30,11 +30,11 @@ public:
 
 using StackAlloc = MallocStackAllocate;
 
-Fiber::Fiber() {  // 当前线程的上下文赋给 main 协程，
+Fiber::Fiber() {  
     m_state = EXEC;
     SetThis(this); 
 
-    if (getcontext(&m_ctx)) {
+    if (getcontext(&m_ctx)) {       // 当前 thread 的上下文赋给 main fiber
         SYLAR_ASSERT2(false, "Fiber::Fiber(): getcontext");
     }
 
@@ -108,7 +108,7 @@ void Fiber::swapIn() {
     SYLAR_ASSERT(m_state != EXEC);
     m_state = EXEC;
 
-    if (swapcontext(&t_threadFiber->m_ctx, &m_ctx)) {
+    if (swapcontext(&t_threadFiber->m_ctx, &m_ctx)) {       // 切换到 m_ctx 执行， 即 MainFunc
         SYLAR_ASSERT2(false, "Fiber::swapIn: swapcontext");
     }
 }
@@ -117,28 +117,30 @@ void Fiber::swapOut() {
     // 当前协程 Yield 到后台，唤醒 main 协程
     SetThis(t_threadFiber.get());
     
-    if (swapcontext(&m_ctx, &t_threadFiber->m_ctx)) {
+    if (swapcontext(&m_ctx, &t_threadFiber->m_ctx)) {       // 切换到 t_threadFiber->m_ctx, 即 main fiber
         SYLAR_ASSERT2(false, "Fiber::swapOut: swapcontext");
     }
 
 
 }
 
+// 设置当前协程
 void Fiber::SetThis(Fiber* fiber) {
     t_fiber = fiber;
 }
 
+// 获得当前执行协程的引用
 Fiber::ptr Fiber::GetThis() {
     if (t_fiber) {
-        return t_fiber->shared_from_this();
+        return t_fiber->shared_from_this();  // 当前协程
     }
 
     Fiber::ptr main_fiber(new Fiber);
-    SYLAR_ASSERT(t_fiber == main_fiber.get());
+    SYLAR_ASSERT(t_fiber == main_fiber.get());  // 当前协程应为 主协程
 
     t_threadFiber = main_fiber;
     
-    return t_fiber->shared_from_this();
+    return t_fiber->shared_from_this();  
 }
 
 // 当前协程切换到后台并设置为 Ready 状态
@@ -162,7 +164,7 @@ uint64_t Fiber::TotalFibers() {
 }
 
 void Fiber::MainFunc() {
-    Fiber::ptr cur = GetThis();
+    Fiber::ptr cur = GetThis();                         // 当前子协程引用计数 + 1
     SYLAR_ASSERT(cur);
     try {
         cur->m_cb();
@@ -174,6 +176,15 @@ void Fiber::MainFunc() {
     } catch (...) {
         SYLAR_LOG_ERROR(g_logger) << "Fiber Except.";;
     }
+
+    SYLAR_LOG_DEBUG(g_logger) << "subfiber ref_count = " << cur.use_count();
+
+    // 需要减少智能指针 GetThis 的引用计数
+    auto raw_ptr = cur.get();
+    cur.reset();
+
+    // 需要切回主协程
+    raw_ptr->swapOut();
 }
 
 uint64_t Fiber::GetFiberId() {
