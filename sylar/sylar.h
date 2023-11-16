@@ -6,6 +6,7 @@
 #include "log.h"
 #include "macro.h"
 #include "singleton.h"
+#include "scheduler.h"
 #include "thread.h"
 #include "util.h"
 

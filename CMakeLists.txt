@@ -11,11 +11,12 @@ include_directories(/usr/local/include)  # yaml-cpp
 link_directories(/usr/local/lib)  # 类库
 
 set(LIB_SRC
+    sylar/config.cc
     sylar/log.cc
     sylar/fiber.cc
-    sylar/util.cc
-    sylar/config.cc
+    sylar/scheduler.cc
     sylar/thread.cc
+    sylar/util.cc
     )
 
 add_library(sylar SHARED ${LIB_SRC})
@@ -57,6 +58,11 @@ add_executable(test_fiber tests/test_fiber.cc)
 add_dependencies(test_fiber sylar)
 force_redefine_file_macro_for_sources(test_fiber)  
 target_link_libraries(test_fiber ${LIBS})
+
+add_executable(test_scheduler tests/test_scheduler.cc)
+add_dependencies(test_scheduler sylar)
+force_redefine_file_macro_for_sources(test_scheduler)  
+target_link_libraries(test_scheduler ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

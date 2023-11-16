@@ -10,7 +10,9 @@
 			"request": "launch",
 			// "program": "${workspaceFolder}/bin/test",
 			// "program": "${workspaceFolder}/bin/test_config",
-			"program": "${workspaceFolder}/bin/test_fiber",
+			// "program": "${workspaceFolder}/bin/test_fiber",
+			"program": "${workspaceFolder}/bin/test_scheduler",
+
 
 
 			"args": [],
