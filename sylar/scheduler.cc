@@ -7,7 +7,7 @@ namespace sylar {
 static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 
 static thread_local Scheduler* t_scheduler = nullptr;       // 线程中获取调度器指针
-static thread_local Fiber* t_fiber = nullptr;               // 此协程的主协程函数
+static thread_local Fiber* t_scheduler_fiber = nullptr;               // 此协程的主协程函数
 
 Scheduler::Scheduler(size_t thread_size, bool use_caller, const std::string& name) 
         :m_name(name) {
@@ -18,17 +18,11 @@ Scheduler::Scheduler(size_t thread_size, bool use_caller, const std::string& nam
 
         SYLAR_ASSERT(GetThis() == nullptr);  // 当前线程必须没有调度器存在
         t_scheduler = this;
-        // 当线程是一个新线程时，新线程的主线程并不会参与协程调度
-        // 所以，创建一个新的线程专门去做Schedule 的流程方法
-        // run() 方法中去执行
-        // 使用了 use_caller 意味着 main 协程是不能参与到 run() 方法中的
-        // 所以，通过此方法进行调度
+    
         m_rootFiber.reset(new Fiber(std::bind(&Scheduler::run, this), 0, true));
         sylar::Thread::SetName(m_name);
 
-        // 线程中声明一个调度器，在把当前线程放入调度器中时，
-        // 它的主协程不再是线程的主协程，而是执行 run 的主协程
-        t_fiber = m_rootFiber.get();
+        t_scheduler_fiber = m_rootFiber.get();
 
         m_rootThread = sylar::GetThreadId();  // 主线程 id
         m_threadIds.push_back(m_rootThread);
@@ -57,7 +51,7 @@ Scheduler* Scheduler::GetThis() {
 
 // 协程调度器中的主协程
 Fiber* Scheduler::GetMainFiber() {
-    return t_fiber;
+    return t_scheduler_fiber;
 }
 
 void Scheduler::start() {
@@ -90,9 +84,6 @@ void Scheduler::start() {
 }
 
 void Scheduler::stop() {
-    // stop 两种情况： 用 use_caller 与 不用 use_caller
-    // 1. 使用 use_caller 的一定要在创建的线程中执行 stop
-    // 2. 没有使用，则可以在任意非自己的所在的线程执行 stop
 
     m_autoStop = true;
     // 1. 只有一个线程情况
@@ -129,15 +120,19 @@ void Scheduler::stop() {
     }
 
     if (m_rootFiber) {
-        while (!stopping()) {
-            if (m_rootFiber->getState() == Fiber::TREM 
-                    || m_rootFiber->getState() == Fiber::EXCEPT) {
+        // while (!stopping()) {
+        //     if (m_rootFiber->getState() == Fiber::TREM 
+        //             || m_rootFiber->getState() == Fiber::EXCEPT) {
                 
-                // if m_rootFiber 停止，就新建一个方法去 run
-                m_rootFiber.reset(new Fiber(std::bind(&Scheduler::run, this), 0, true));
-               SYLAR_LOG_INFO(g_logger) << "root fiber is term, reset";
+        //         // if m_rootFiber 停止，就新建一个方法去 run
+        //         m_rootFiber.reset(new Fiber(std::bind(&Scheduler::run, this), 0, true));
+        //        SYLAR_LOG_INFO(g_logger) << "root fiber is term, reset";
+        //        t_fiber = m_rootFiber.get();
 
-            }
+        //     }
+        // }
+
+        if (!stopping()) {
             m_rootFiber->call();
         }
     }
@@ -145,6 +140,7 @@ void Scheduler::stop() {
     std::vector<Thread::ptr> tmp_threads;
     {
         MutexType::Lock lock(m_mutex);
+        tmp_threads.swap(m_threads);
     }
     
     for(auto& thread : tmp_threads) {
@@ -166,18 +162,9 @@ void Scheduler::run() {
     setThis();
 
     if (sylar::GetThreadId() != m_rootThread) {  // 即 run() 所在 id
-        t_fiber = Fiber::GetThis().get();
+        t_scheduler_fiber = Fiber::GetThis().get();
     } 
 
-    // 没有任务做的时候，应该执行 idle 协程 
-    // idle() 具体做什么，取决于子类
-    // 因为协程调度器中没有任务，又不能使线程终止
-    // 1. idle 可以在没有任务的情况下，一直占用CPU
-    // 2. 或者 没过一段时间 sleep，让出执行时间
-    // 具体的实现有子类完成
-    // 例子：基于 epoll 的异步 socket I/O
-    // 如果想使 调度器支持 epoll，那么 idle 陷入在 epoll_wait 中
-    // 通过 epoll_wait 来唤醒它，执行任务
     Fiber::ptr idle_fiber(new Fiber(std::bind(&Scheduler::idle, this)));
     Fiber::ptr cb_fiber;  // 回调函数， function 函数的协程
 
@@ -185,7 +172,7 @@ void Scheduler::run() {
     while (true) {
         ft.reset();
         bool tickle_me = false;
-
+        bool is_active = false;
         // 协程消息队列中取协程
         {
             MutexType::Lock lock(m_mutex);
@@ -193,8 +180,7 @@ void Scheduler::run() {
             while (it != m_fibers.end()) {
                 
                 // 如果一个任务已经指定好了在哪个线程执行，
-                // 当前正在执行 run 的线程 不是它所指定的，跳过
-                // 通知其他线程去处理
+                // 当前正在执行 run 的线程 不是它所指定的，跳过 并通知其他线程去处理
                 if (it->thread != -1 && it->thread != sylar::GetThreadId()) {
                     ++it;
                     tickle_me = true;  // 通知其他线程
@@ -209,9 +195,9 @@ void Scheduler::run() {
                 }
 
                 ft = *it;
-                m_fibers.erase(it);
-                // m_fibers.erase(it++);
-                // ++m_activeThreadCount;
+                m_fibers.erase(it++);
+                ++m_activeThreadCount;
+                is_active = true;
                 break;
 
             }
@@ -224,7 +210,6 @@ void Scheduler::run() {
 
         if (ft.fiber && (ft.fiber->getState() != Fiber::TREM
                 && ft.fiber->getState() != Fiber::EXCEPT)) {
-            ++m_activeThreadCount;
             ft.fiber->swapIn();  // 唤醒并执行
             --m_activeThreadCount;
 
@@ -240,10 +225,8 @@ void Scheduler::run() {
                 cb_fiber->reset(ft.cb);  // 使用的 ->，所以访问的是 Fiber::reset
             } else {
                 cb_fiber.reset(new Fiber(ft.cb)); // 智能指针的 reset
-                // ft.cb = nullptr;
             }
             ft.reset();
-            ++m_activeThreadCount;
             cb_fiber->swapIn();  // 新创建的协程 swapIn()
             --m_activeThreadCount;
             
@@ -259,6 +242,10 @@ void Scheduler::run() {
                 cb_fiber.reset();
             }
         } else {  // 没有任务执行，就执行 idle
+            if (is_active) {
+                --m_activeThreadCount;
+                continue;
+            }
             if (idle_fiber->getState() == Fiber::TREM) {
                 SYLAR_LOG_INFO(g_logger) << "idle fiber term";
                 break;
@@ -289,6 +276,9 @@ bool Scheduler::stopping() {
 
 void Scheduler::idle() {
     SYLAR_LOG_INFO(g_logger) << "idle()";
+    while(!stopping()) {
+        sylar::Fiber::YieldToHold();  // 让出执行时间
+    }
 }
 
 
