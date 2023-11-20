@@ -237,7 +237,7 @@ void Fiber::CallerMainFunc() {
                 << sylar::BacktraceToString();
     }
 
-    SYLAR_LOG_DEBUG(g_logger) << "subfiber ref_count = " << cur.use_count();
+    // SYLAR_LOG_DEBUG(g_logger) << "subfiber ref_count = " << cur.use_count();
 
     // 需要减少智能指针 GetThis 的引用计数
     auto raw_ptr = cur.get();
