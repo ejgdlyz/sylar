@@ -1,4 +1,5 @@
 #include <execinfo.h>
+#include <sys/time.h>
 #include "util.h"
 #include "log.h"
 #include "fiber.h"
@@ -44,5 +45,20 @@ std::string BacktraceToString(int size, int skip, const std::string& prefix) {
 
     return ss.str();
 }
+
+// 时间 ms
+uint64_t GetCurretMS() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec * 1000ul + tv.tv_usec / 1000;
+}
+
+// 时间 us
+uint64_t GetCurretUS() {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_sec * 1000 * 1000ul + tv.tv_usec;
+}
+
 
 }

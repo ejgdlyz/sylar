@@ -49,7 +49,7 @@ public:
         {
             MutexType::Lock lock(m_mutex);
             while (begin != end) {
-                need_tickle = scheduleNoLock(&*begin) || need_tickle;  // 这里传入的是指针，会进行 swap
+                need_tickle = scheduleNoLock(&*begin, -1) || need_tickle;  // 这里传入的是指针，会进行 swap
                 ++begin;
             }
         }

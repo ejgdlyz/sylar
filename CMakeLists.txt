@@ -17,6 +17,7 @@ set(LIB_SRC
     sylar/log.cc
     sylar/scheduler.cc
     sylar/thread.cc
+    sylar/timer.cc
     sylar/util.cc
     )
 
@@ -69,6 +70,11 @@ add_executable(test_iomanager tests/test_iomanager.cc)
 add_dependencies(test_iomanager sylar)
 force_redefine_file_macro_for_sources(test_iomanager)  
 target_link_libraries(test_iomanager ${LIBS})
+
+add_executable(test_iomanager_serv tests/test_iomanager_serv.cc)
+add_dependencies(test_iomanager_serv sylar)
+force_redefine_file_macro_for_sources(test_iomanager_serv)  
+target_link_libraries(test_iomanager_serv ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

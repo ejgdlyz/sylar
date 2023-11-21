@@ -21,8 +21,10 @@ void test_fiber() {
     // setsockopt(sock, SOL_SOCKET, );
     fcntl(sock, F_SETFL, O_NONBLOCK); // 异步
     
-    int port = 80;
-    const char* ip = "110.242.68.4"; // baidu.com
+    int port = 9999;
+    const char* ip = "127.0.0.1"; // baidu.com
+    // const char* ip = "110.242.68.4"; // baidu.com
+
 
     sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -48,6 +50,7 @@ void test_fiber() {
             close(sock);
 
         });
+
     } else {
         SYLAR_LOG_INFO(g_logger) << "else " << errno << " " << strerror(errno);
     }
@@ -59,12 +62,27 @@ void test01() {
             << ", EPOLLOUT = " << EPOLLOUT << std::endl;
 
     sylar::IOManager iom;
+    // sylar::IOManager iom(2, false);
     iom.schedule(&test_fiber);
 
 }
 
+sylar::Timer::ptr s_timer;
+void test_timer() {
+    sylar::IOManager iom(2);
+    s_timer = iom.addTimer(1000, [](){
+        SYLAR_LOG_INFO(g_logger) << "hello timer";
+        static int i = 0;
+        if (++i == 3) {
+            // s_timer->cancel();
+            s_timer->reset(2000, true);
+        }
+    }, true);
+}
+
 int main(int argc, char const *argv[])
 {
-    test01();    
+    // test01();
+    test_timer();    
     return 0;
 }

@@ -269,10 +269,19 @@ void IOManager::tickle() {
     SYLAR_ASSERT(rt == 1);
 }
 
-// @override
+// for idle()
+bool IOManager::stopping(uint64_t& timeout) {
+    timeout = getNextTimer();
+    return timeout == ~0ull 
+            && m_pendingEventCount == 0
+            && Scheduler::stopping();
+}
+
+// @override, for schedule
 bool IOManager::stopping() {
-    return Scheduler::stopping() 
-            && m_pendingEventCount == 0;
+    uint64_t timeout;
+    return stopping(timeout);
+            
 }
 
 // @override, 线程空闲时，陷入 idle, 即 epoll_wait
@@ -281,16 +290,23 @@ void IOManager::idle() {
     std::shared_ptr<epoll_event> shared_events(events, [](epoll_event* ptr){ delete[] ptr;});
 
     while (true) {
-        if (stopping()) {
+        uint64_t next_timeout = 0;
+        if (stopping(next_timeout)) {
             SYLAR_LOG_INFO(g_logger) << "name = " << getName() 
                     << " idle stopping exit";
             break;
+        
         }
 
         int rt = 0;
         do {
-            static const int MAX_TIMEOUT = 5000; // 5s
-            rt = epoll_wait(m_epollfd, events, 64, MAX_TIMEOUT);
+            static const int MAX_TIMEOUT = 3000; // 3s
+            if (next_timeout != ~0ull) {
+                next_timeout = std::min((int)next_timeout, MAX_TIMEOUT);
+            } else {
+                next_timeout = MAX_TIMEOUT;
+            }
+            rt = epoll_wait(m_epollfd, events, 64, (int)next_timeout);
 
             if (rt < 0 && errno == EINTR) {
                 continue;
@@ -301,10 +317,18 @@ void IOManager::idle() {
 
         } while(true);
 
+        // 检查定时器, 满足条件的回调
+        std::vector<std::function<void()>> cbs;
+        listExpiredCb(cbs);
+        if (!cbs.empty()) {
+            schedule(cbs.begin(), cbs.end());
+            cbs.clear();
+        }
+
         // 处理所有的事件
         for (int i = 0; i < rt; ++i) {
             epoll_event& event = events[i];
-            if (event.data.fd == m_tickleFds[0]) {  // 确定是 事件到来
+            if (event.data.fd == m_tickleFds[0]) {  // tick() 的消息无意义，跳过
                 uint8_t dummy;
                 while (read(m_tickleFds[0], &dummy, 1) == 1);
                 continue;
@@ -361,5 +385,9 @@ void IOManager::idle() {
     }
 }
 
+void IOManager::onTimerInsertedAtFront() {
+    tickle();
+
+}
 
 }
