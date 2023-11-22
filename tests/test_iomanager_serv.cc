@@ -12,10 +12,10 @@ int main(int argc, char const *argv[])
 {
     int serv_sock;
 
-    struct sockaddr_in serv_addr;  // p41
-    struct sockaddr_in clnt_addr;
+    sockaddr_in serv_addr;  // p41
+    sockaddr_in clnt_addr;
 
-    char message[] = "Hello World!";
+    // char message[] = "Hello World!";
 
     if (argc != 2)
     {
@@ -33,29 +33,38 @@ int main(int argc, char const *argv[])
 
     int rt = 0;
     rt = bind(serv_sock, (const sockaddr*) &serv_addr, sizeof(serv_addr));
-    // std::cout << "rt = " << rt << ", "<< errno << " -> " << strerror(errno) << std::endl;
-    SYLAR_ASSERT(!rt);
+    std::cout << "rt = " << rt << ", "<< errno << " -> " << strerror(errno) << std::endl;
+    SYLAR_ASSERT(rt != -1);
     
    
     rt = listen(serv_sock, 5);
-    // SYLAR_ASSERT(!rt);
+    SYLAR_ASSERT(rt != -1);
     SYLAR_LOG_INFO(g_logger) << "listen...";
     
     int clnt_sock;
     socklen_t clnt_addr_size;
     clnt_addr_size = sizeof(clnt_addr);
-    int cnt = 10;
     clnt_sock = accept(serv_sock, (sockaddr*) &clnt_addr, &clnt_addr_size);
-    // SYLAR_ASSERT(clnt_sock >= 0);
+    SYLAR_ASSERT(clnt_sock >= 0);
+    
+    // const char* msg = "T";
+    // write(clnt_sock, msg, sizeof(msg));
 
+    // case1：延时关闭连接，
+    int cnt = 10;
     while (--cnt >= 0) {
         SYLAR_LOG_INFO(g_logger) << "cnt = " << cnt;
 
         sleep(2);
-        write(clnt_sock, message, sizeof(message));
-
     }
-   
+    
+    // case 2: 立即关闭
+
+    // // case 3: not exists
+    // int t = 0;
+    // std::cin >> t; 
+    // std::cout << "case 3: t = " << t << std::endl;
+
     // 关闭套接字
     close(clnt_sock);
     close(serv_sock);

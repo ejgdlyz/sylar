@@ -1,6 +1,7 @@
 #include "sylar/sylar.h"
 #include "sylar/iomanager.h"
 #include "sylar/macro.h"
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/fcntl.h>
@@ -22,7 +23,7 @@ void test_fiber() {
     fcntl(sock, F_SETFL, O_NONBLOCK); // 异步
     
     int port = 9999;
-    const char* ip = "127.0.0.1"; // baidu.com
+    const char* ip = "127.0.0.1"; //
     // const char* ip = "110.242.68.4"; // baidu.com
 
 
@@ -35,8 +36,11 @@ void test_fiber() {
     addr.sin_port = htons(port);
 
     int rt = connect(sock, (const sockaddr*)&addr, sizeof(addr));
-    SYLAR_ASSERT(rt);
-    if (errno == EINPROGRESS) {
+
+    // std::cout << "errno = " << errno << ", " << strerror(errno) << std::endl;
+    // SYLAR_ASSERT(rt != -1); 
+
+    if (rt == -1 && errno == EINPROGRESS) {  // 连接正在建立，成功后将触发 out 事件， epoll_wait 返回
         SYLAR_LOG_INFO(g_logger) << "addEvent errno = " << errno << ", " << strerror(errno);
         
         sylar::IOManager::GetThis()->addEvent(sock, sylar::IOManager::READ, [](){
@@ -57,7 +61,7 @@ void test_fiber() {
 
 }
 
-void test01() {
+void test_iomanager() {
     std::cout << "EPOLLIN = " << EPOLLIN 
             << ", EPOLLOUT = " << EPOLLOUT << std::endl;
 
@@ -82,7 +86,7 @@ void test_timer() {
 
 int main(int argc, char const *argv[])
 {
-    // test01();
-    test_timer();    
+    test_iomanager();
+    // test_timer();    
     return 0;
 }

@@ -31,7 +31,7 @@ Timer::Timer(uint64_t ms, std::function<void()> cb,
     ,m_cb(cb)
     ,m_manager(manager) {
     
-    m_next = sylar::GetCurretMS() + m_ms;
+    m_next = sylar::GetCurretMS() + m_ms;  // 绝对时间点
 
 }
 
@@ -87,10 +87,10 @@ bool Timer::reset(uint64_t ms, bool from_now) {
     if (from_now) {
         start = sylar::GetCurretMS();
     } else {
-        start = m_next - m_ms;  // 减去原来的间隔
+        start = m_next - m_ms;  // 旧定时器开始执行的时刻
     }
     m_ms = ms;
-    m_next = start + m_ms;   // 加上新的间隔
+    m_next = start + m_ms;   // 旧时刻 + 新间隔 = 新的绝对时间点
     m_manager->addTimer(shared_from_this(), lock);
 
     return true;
@@ -134,7 +134,7 @@ Timer::ptr TimerManager::addContitionTimer(uint64_t ms, std::function<void()> cb
 
 uint64_t TimerManager::getNextTimer() {
     RWMutexType::ReadLock lock(m_mutex);
-    m_tickled = false; // 说明需要重新调用epoll_wait，清楚标志
+    m_tickled = false; // 说明需要重新调用epoll_wait，清除标志
     if (m_timers.empty()) {
         return ~0ull;  // 最大值
     }

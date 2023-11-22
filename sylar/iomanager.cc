@@ -290,12 +290,12 @@ void IOManager::idle() {
     std::shared_ptr<epoll_event> shared_events(events, [](epoll_event* ptr){ delete[] ptr;});
 
     while (true) {
-        uint64_t next_timeout = 0;
+        uint64_t next_timeout = 0;      // 堆顶定时器过期剩余时间
         if (stopping(next_timeout)) {
             SYLAR_LOG_INFO(g_logger) << "name = " << getName() 
                     << " idle stopping exit";
-            break;
-        
+            break;  
+            // idle_fiber: TREM
         }
 
         int rt = 0;
@@ -337,7 +337,7 @@ void IOManager::idle() {
             FdContext* fd_ctx = (FdContext*)event.data.ptr;
             FdContext::MutexType::Lock lock(fd_ctx->mutex);
             if (event.events & (EPOLLERR | EPOLLHUP))  {  // 该事件为 epoll 错误或者中断
-                event.events |= EPOLLIN | EPOLLOUT;
+                event.events |= (EPOLLIN | EPOLLOUT) & fd_ctx->events;
             }
             int real_events = NONE;
             if (event.events & EPOLLIN) {  // 读事件
@@ -383,7 +383,8 @@ void IOManager::idle() {
 
         raw_ptr->swapOut(); 
     }
-}
+    
+} 
 
 void IOManager::onTimerInsertedAtFront() {
     tickle();
