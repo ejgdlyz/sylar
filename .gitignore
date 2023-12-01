@@ -36,7 +36,4 @@ bin/*.txt
 tests/my_test.cpp
 tests/my_test
 
-sylar/hook.h
-sylar/hook.cc
-
 .git-old
