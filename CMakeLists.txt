@@ -12,6 +12,7 @@ link_directories(/usr/local/lib)  # 类库
 
 set(LIB_SRC
     sylar/config.cc
+    sylar/fd_manager.cc
     sylar/fiber.cc
     sylar/hook.cc
     sylar/iomanager.cc

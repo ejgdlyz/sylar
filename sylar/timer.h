@@ -52,7 +52,7 @@ public:
     
     // 条件定时器： 传一个条件作为触发条件
     // 以一个智能指针作为条件，使用其引用计数功能
-    Timer::ptr addContitionTimer(uint64_t ms, std::function<void()> cb, std::weak_ptr<void> weak_cond, bool recurring = false);
+    Timer::ptr addConditionTimer(uint64_t ms, std::function<void()> cb, std::weak_ptr<void> weak_cond, bool recurring = false);
 
     // 下一个定时器的执行时间
     uint64_t getNextTimer();

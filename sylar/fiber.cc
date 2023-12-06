@@ -41,7 +41,7 @@ Fiber::Fiber() {
 
     ++s_fiber_count;
 
-    SYLAR_LOG_DEBUG(g_logger) << "Fiber::Fiber(main), id = " << m_id;
+    SYLAR_LOG_DEBUG(g_logger) << "Fiber::Fiber(main), id = " << m_id << " " << this;
 }
 
 Fiber::Fiber(std::function<void()> cb, size_t stack_size, bool use_caller) 
@@ -65,7 +65,7 @@ Fiber::Fiber(std::function<void()> cb, size_t stack_size, bool use_caller)
     else {
         makecontext(&m_ctx, &Fiber::CallerMainFunc, 0);   // 有 caller 版本
     }
-    SYLAR_LOG_DEBUG(g_logger) << "Fiber::Fiber (sub), id = " << m_id;
+    SYLAR_LOG_DEBUG(g_logger) << "Fiber::Fiber (sub), id = " << m_id << " " << this;
 
 }
 

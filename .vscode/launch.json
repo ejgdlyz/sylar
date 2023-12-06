@@ -12,9 +12,8 @@
 			// "program": "${workspaceFolder}/bin/test_config",
 			// "program": "${workspaceFolder}/bin/test_fiber",
 			// "program": "${workspaceFolder}/bin/test_scheduler",
-			"program": "${workspaceFolder}/bin/test_iomanager",
-
-
+			// "program": "${workspaceFolder}/bin/test_iomanager",
+			"program": "${workspaceFolder}/bin/test_hook",
 
 
 			"args": [],
