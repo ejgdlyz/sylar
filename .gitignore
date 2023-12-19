@@ -35,5 +35,5 @@ bin/*.txt
 
 tests/my_test.cpp
 tests/my_test
-
+test_func/
 .git-old
