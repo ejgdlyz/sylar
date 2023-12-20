@@ -11,6 +11,7 @@ include_directories(/usr/local/include)  # yaml-cpp
 link_directories(/usr/local/lib)  # 类库
 
 set(LIB_SRC
+    sylar/address.cc
     sylar/config.cc
     sylar/fd_manager.cc
     sylar/fiber.cc
@@ -18,10 +19,10 @@ set(LIB_SRC
     sylar/iomanager.cc
     sylar/log.cc
     sylar/scheduler.cc
+    sylar/socket.cc
     sylar/thread.cc
     sylar/timer.cc
     sylar/util.cc
-    sylar/address.cc
     )
 
 add_library(sylar SHARED ${LIB_SRC})
@@ -88,6 +89,11 @@ add_executable(test_address tests/test_address.cc)
 add_dependencies(test_address sylar)
 force_redefine_file_macro_for_sources(test_address)  
 target_link_libraries(test_address ${LIBS})
+
+add_executable(test_socket tests/test_socket.cc)
+add_dependencies(test_socket sylar)
+force_redefine_file_macro_for_sources(test_socket)  
+target_link_libraries(test_socket ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
