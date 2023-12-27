@@ -272,7 +272,7 @@ uint32_t ByteArray::readUint32() {
             result |= ((uint32_t)b) << i;
             break;
         } else {
-            result |= (((uint32_t)(b & 0x7f)) << i);
+            result |= (((uint32_t)(b & 0x7f)) << i);  // (b & 0x7f) 取得低 7 位
         }
     }
     return result;
@@ -312,8 +312,8 @@ double ByteArray::readDouble() {
 
 // length: int16, data
 std::string ByteArray::readStringF16() {
-    uint16_t len = readFuint16();
-    std::string buf;
+    uint16_t len = readFuint16();  // 先读长度
+    std::string buf;               // 然后读字符数据
     buf.resize(len);
     read(&buf[0], len);
     return buf;
@@ -339,7 +339,7 @@ std::string ByteArray::readStringF64() {
 
 // length: varint, data
 std::string ByteArray::readStringVint() {
-    uint64_t len = readFuint64();
+    uint64_t len = readUint64();
     std::string buf;
     buf.resize(len);
     read(&buf[0], len);

@@ -1,6 +1,8 @@
 #include "sylar/bytearray.h"
 #include "sylar/sylar.h"
 #include "sylar/log.h"
+#include <iostream>
+using namespace std;
 
 static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 
@@ -138,9 +140,26 @@ void test_debug() {
     // XX(int8_t, 100, writeFint8, readFint8, 1);
 }
 
+void test_func() {
+    int base_len = 3;
+    sylar::ByteArray::ptr ba(new sylar::ByteArray(base_len));
+    
+    int32_t v1 = -300;
+    ba->writeInt32(v1);
+    std::cout << std::hex << "v1 = " << v1 << std::endl;
+
+
+    ba->setPosition(0);
+    int32_t v2 = ba->readInt32();
+    std::cout << std::hex << "v2 = " << v2 << std::endl;
+
+}
+
 int main(int argc, char const *argv[])
 {
-    test_bytearray();
+    // test();
+    // test_bytearray();
     // test_debug();
+    test_func();
     return 0;
 }
