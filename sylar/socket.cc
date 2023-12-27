@@ -233,6 +233,7 @@ int Socket::send(const void* buffer, size_t length, int flags) {
     return -1;
 }
 
+// length 是 iovec 的长度
 int Socket::send(const iovec* buffers, size_t length, int flags) {
     if (isConnected()) {
         msghdr msg;

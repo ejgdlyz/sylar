@@ -71,7 +71,8 @@
         "socket": "cpp",
         "timer": "cpp",
         "future": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "iomanip": "cpp"
     },
     "cmake.configureOnOpen": true
 }
