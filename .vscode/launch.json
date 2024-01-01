@@ -15,8 +15,8 @@
 			// "program": "${workspaceFolder}/bin/test_iomanager",
 			// "program": "${workspaceFolder}/bin/test_hook",
 			// "program": "${workspaceFolder}/bin/test_address",
-			"program": "${workspaceFolder}/bin/test_bytearray",
-
+			// "program": "${workspaceFolder}/bin/test_bytearray",
+			"program": "${workspaceFolder}/bin/test_http_parser",
 
 			"args": [],
 			"stopAtEntry": false,
