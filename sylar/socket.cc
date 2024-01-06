@@ -106,7 +106,7 @@ bool Socket::setOption(int level, int option, const void* result, size_t len) {
     int rt = setsockopt(m_sock, level, option, result, (socklen_t)len);
     if (rt) {
         SYLAR_LOG_DEBUG(g_logger) << "getOption sock=" << m_sock 
-                << " level=" << level << " option" << option
+                << " level=" << level << " option=" << option
                 << " errno=" << errno << " errstr=" << strerror(errno);
         return false;
     }
@@ -114,14 +114,14 @@ bool Socket::setOption(int level, int option, const void* result, size_t len) {
 }
 
 Socket::ptr Socket::accept() {
-    Socket::ptr sock(new Socket(m_family, m_type, m_protocol));
-    int newsock = ::accept(m_sock, nullptr, nullptr);
+    Socket::ptr sock(new Socket(m_family, m_type, m_protocol));     // create client socket
+    int newsock = ::accept(m_sock, nullptr, nullptr);               // return a new socket fd
     if (newsock == -1) {
         SYLAR_LOG_ERROR(g_logger) << "accept(" << m_sock << ") errno"
                 << errno << " errstr=" << strerror(errno);
         return nullptr;
     }
-    if (sock->init(newsock)) {
+    if (sock->init(newsock)) {              // sock 绑定 newsock fd
         return sock;
     } 
     return nullptr;
@@ -206,8 +206,8 @@ bool Socket::listen(int backlog) {
         SYLAR_LOG_ERROR(g_logger) << "listen error sock=-1";
         return false;
     }
-    if (::listen(m_sock, backlog) == 0) {
-        SYLAR_LOG_ERROR(g_logger) << "listen error errno" << errno
+    if (::listen(m_sock, backlog)) {
+        SYLAR_LOG_ERROR(g_logger) << "listen error errno=" << errno
                 << " errstr=" << strerror(errno);
         return false;
     }
@@ -436,6 +436,10 @@ void Socket::newSock() {
                 << errno << " errstr" << strerror(errno);
     }
 
+}
+
+std::ostream& operator<< (std::ostream& os, const Socket& sock) {
+    return sock.dump(os);
 }
 
 }

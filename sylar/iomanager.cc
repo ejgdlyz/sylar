@@ -122,7 +122,7 @@ int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
     epevent.events = EPOLLET | fd_context->events | event;  // 新的 event
     epevent.data.ptr = fd_context;                          // fd_context 作为 event.data.ptr 的内容
 
-    int rt = epoll_ctl(m_epollfd, op, fd, &epevent);    // 将 fd(sock) 添加到 m_epollfd 中
+    int rt = epoll_ctl(m_epollfd, op, fd, &epevent);    // 将 listened/connected fd(sock) 添加到 m_epollfd 中
     if (rt) {
         SYLAR_LOG_ERROR(g_logger) << "epoll_ctl (" << m_epollfd << ", "
                 << op << ", " << fd << ", " << epevent.events << ")"

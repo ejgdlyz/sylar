@@ -194,12 +194,12 @@ void Fiber::MainFunc() {
     }  catch (std::exception& e) {
         cur->m_state = EXCEPT;
         SYLAR_LOG_ERROR(g_logger) << "Fiber Except: " << e.what()
-                << "fiber_id = " << cur->getId()
+                << " fiber_id = " << cur->getId()
                 << std::endl
                 << sylar::BacktraceToString();
     } catch (...) {
         SYLAR_LOG_ERROR(g_logger) << "Fiber Except."
-                << "fiber_id = " << cur->getId()
+                << " fiber_id = " << cur->getId()
                 << std::endl
                 << sylar::BacktraceToString();
     }

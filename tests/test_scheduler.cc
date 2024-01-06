@@ -18,6 +18,7 @@ void test_fiber() {
 int main(int argc, char const *argv[]) {
 
     SYLAR_LOG_INFO(g_logger) << "main start";
+    // sylar::Scheduler sc(1, true, "test");
     sylar::Scheduler sc(3, false, "test");  // true 使用当前线程，false 为不使用当前线程，这将创建 3 个线程
     sc.start();
     sleep(2);

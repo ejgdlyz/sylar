@@ -4,10 +4,11 @@
 #include "sylar.h"
 #include "scheduler.h"
 #include "timer.h"
+#include "noncopyable.h"
 
 namespace sylar {
 
-class IOManager : public Scheduler, public TimerManager {
+class IOManager : public Scheduler, public TimerManager, public NonCopyable {
 public:
     typedef std::shared_ptr<IOManager> ptr;
     typedef RWMutex RWMutexType;
