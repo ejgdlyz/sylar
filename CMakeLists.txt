@@ -25,6 +25,8 @@ set(LIB_SRC
     sylar/log.cc
     sylar/scheduler.cc
     sylar/socket.cc
+    sylar/stream.cc
+    sylar/socket_stream.cc
     sylar/tcp_server.cc
     sylar/thread.cc
     sylar/timer.cc
