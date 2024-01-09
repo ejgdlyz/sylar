@@ -15,7 +15,7 @@ public:
     HttpRequestParser();
 
     // http_parser_execute()
-    size_t execute(char* data, size_t len, size_t off);   
+    size_t execute(char* data, size_t len);   
 
     // 是否结束，与 http_parser_finish() 有关
     int isFinished(); 
@@ -27,6 +27,9 @@ public:
     void setError(int v) { m_error = v;}
 
     uint64_t getContentLength();
+public:
+    static uint64_t GetHttpRequestBufferSize();
+    static uint64_t GetHttpRequestMaxBodySize();
 private:    
     http_parser m_parser;
     HttpRequest::ptr m_data;            // 作为结果

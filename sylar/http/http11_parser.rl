@@ -38,13 +38,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include <cerrno>
 //#include <dbg.h>
 
 #define LEN(AT, FPC) (FPC - buffer - parser->AT)
 #define MARK(M,FPC) (parser->M = (FPC) - buffer)
 #define PTR_TO(F) (buffer + parser->F)
-#define check(A, M, ...) if(!(A)) { /*log_err(M, ##__VA_ARGS__);*/ errno=0; goto error; }
 
 /** Machine **/
 
@@ -137,7 +135,9 @@
 
   pct_encoded   = ( "%" xdigit xdigit ) ;
 
-  pchar         = ( unreserved | pct_encoded | sub_delims | ":" | "@" ) ;
+# pchar         = ( unreserved | pct_encoded | sub_delims | ":" | "@" ) ;
+# add (any -- ascii) support chinese
+  pchar         = ( (any -- ascii) | unreserved | pct_encoded | sub_delims | ":" | "@" ) ;
 
   fragment      = ( ( pchar | "/" | "?" )* ) >mark %fragment ;
 
@@ -280,7 +280,11 @@ int http_parser_init(http_parser *parser) {
 size_t http_parser_execute(http_parser *parser, const char *buffer, size_t len, size_t off)  
 {
   if(len == 0) return 0;
-
+  parser->nread = 0;
+  parser->mark = 0;
+  parser->field_len = 0;
+  parser->field_start = 0;
+ 
   const char *p, *pe;
   int cs = parser->cs;
 

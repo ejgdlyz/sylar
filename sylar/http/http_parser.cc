@@ -17,6 +17,15 @@ static sylar::ConfigVar<uint64_t>::ptr g_http_request_max_body_size =
 static uint64_t s_http_request_buffer_size = 0;
 static uint64_t s_http_request_max_body_size = 0;
 
+uint64_t HttpRequestParser::GetHttpRequestBufferSize() {
+    return s_http_request_buffer_size;
+}
+
+uint64_t HttpRequestParser::GetHttpRequestMaxBodySize() {
+    return s_http_request_max_body_size;
+}
+
+namespace {
 struct _RequestSizeIniter {
     _RequestSizeIniter() {
         s_http_request_buffer_size = g_http_request_buffer_size->getValue();
@@ -35,6 +44,7 @@ struct _RequestSizeIniter {
 };
 
 static _RequestSizeIniter _init;
+}
 
 void on_request_method(void *data, const char *at, size_t length) {
     HttpRequestParser* parser = static_cast<HttpRequestParser*> (data);
@@ -128,7 +138,7 @@ uint64_t HttpRequestParser::getContentLength() {
 
 // http_parser_execute() 解析函数
 // 1: success, -1: error, >0: 已处理的字节数，且 data 有效数据为 len - offset
-size_t HttpRequestParser::execute(char* data, size_t len, size_t off) {
+size_t HttpRequestParser::execute(char* data, size_t len) {
     size_t offset = http_parser_execute(&m_parser, data, len, 0);
     memmove(data, data + offset, len - offset);  // 剩余数据移动到内存起始位置
     return offset;

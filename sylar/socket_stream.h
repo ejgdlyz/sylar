@@ -13,7 +13,6 @@ public:
     SocketStream(Socket::ptr sock, bool owner = true);
     ~SocketStream();
 
-
     virtual int read(void* buffer, size_t length) override;
     virtual int read(ByteArray::ptr ba, size_t length) override;         // 期望从 Socket 读 length (不确定) 个字节放入 ByteArray
     virtual int write(const void* buffer, size_t length) override;

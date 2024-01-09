@@ -11,7 +11,7 @@ const char test_requeset_data[] = "POST / HTTP/1.1\r\n"
 void test_http_request() {
     sylar::http::HttpRequestParser parser;
     std::string tmp = test_requeset_data;
-    size_t s = parser.execute(&tmp[0], tmp.size(), 0);
+    size_t s = parser.execute(&tmp[0], tmp.size());
     SYLAR_LOG_INFO(g_logger) << "execute header_len=" << s << " has_error=" << parser.hasError()
             << " is_finished=" << parser.isFinished() << " toatal=" << tmp.size()
             << "content-length=" << parser.getContentLength(); 

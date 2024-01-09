@@ -262,6 +262,7 @@ public:
     std::ostream& dump(std::ostream& os) const;
     std::string toString() const;
 
+    void init();
 private:
     HttpMethod m_method;
     uint8_t m_version;          // 一个字节表示版本: 0x11 -> 1.1, 0x10 -> 1.0
@@ -325,7 +326,8 @@ private:
     MapType m_headers;              // 响应头 map
 };
 
-
+std::ostream& operator<<(std::ostream& os, const HttpRequest& req);
+std::ostream& operator<<(std::ostream& os, const HttpResponse& rsp);
 
 }
 }

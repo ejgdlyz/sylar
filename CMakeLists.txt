@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(sylar)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(cmake/utils.cmake)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -19,8 +20,8 @@ set(LIB_SRC
     sylar/hook.cc
     sylar/http/http.cc
     sylar/http/http_parser.cc
-    sylar/http/http11_parser.rl.cc
-    sylar/http/httpclient_parser.rl.cc
+    sylar/http/http_session.cc
+    sylar/http/http_server.cc
     sylar/iomanager.cc
     sylar/log.cc
     sylar/scheduler.cc
@@ -32,6 +33,10 @@ set(LIB_SRC
     sylar/timer.cc
     sylar/util.cc
     )
+
+ragelmaker(sylar/http/http11_parser.rl LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sylar/http)
+ragelmaker(sylar/http/httpclient_parser.rl LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sylar/http)
+# ragelmaker(sylar/uri.rl LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sylar)
 
 add_library(sylar SHARED ${LIB_SRC})
 force_redefine_file_macro_for_sources(sylar)  # redefined __FILE__ as relative path for syalr/
@@ -45,7 +50,7 @@ set(LIBS
         pthread
         yaml-cpp)
 
-message("***", ${LIBS})
+# message("***", ${LIBS})
 
 add_executable(test tests/test.cc)
 add_dependencies(test sylar)
@@ -127,6 +132,11 @@ add_executable(echo_server examples/echo_server.cc)
 add_dependencies(echo_server sylar)
 force_redefine_file_macro_for_sources(echo_server)  
 target_link_libraries(echo_server ${LIBS})
+
+add_executable(test_http_server tests/test_http_server.cc)
+add_dependencies(test_http_server sylar)
+force_redefine_file_macro_for_sources(test_http_server)  
+target_link_libraries(test_http_server ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
