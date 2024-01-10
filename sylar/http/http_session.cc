@@ -45,7 +45,7 @@ HttpRequest::ptr HttpSession::recvRequest() {
     int64_t body_length = parser->getContentLength();  // 获得 header 中 "content-length" 对应的 body 长度
     if (body_length > 0) {
         std::string body;
-        body.reserve(body_length);
+        body.resize(body_length);
 
         int len = 0;
         if (body_length >= offset) {     // body 长度 > 缓冲区剩余大小，将 data 中的数据全部复制到 body
