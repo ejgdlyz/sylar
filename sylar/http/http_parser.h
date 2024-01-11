@@ -27,6 +27,7 @@ public:
     void setError(int v) { m_error = v;}
 
     uint64_t getContentLength();
+    const http_parser& getParser() const { return m_parser;}
 public:
     static uint64_t GetHttpRequestBufferSize();
     static uint64_t GetHttpRequestMaxBodySize();
@@ -43,8 +44,8 @@ public:
     typedef std::shared_ptr<HttpResponseParser> ptr;
     HttpResponseParser();
     
-    // http_parser_execute()
-    size_t execute(char* data, size_t len);   
+    // http_parser_execute(), chunck 表示响应是否分块传输
+    size_t execute(char* data, size_t len, bool chunck);   
 
     // 是否结束，与 http_parser_finish() 有关
     int isFinished(); 
@@ -56,10 +57,15 @@ public:
     void setError(int v) { m_error = v;}
 
     uint64_t getContentLength();
+    const httpclient_parser& getParser() const { return m_parser;}
+public:
+    static uint64_t GetHttpResponseBufferSize();
+    static uint64_t GetHttpResponseMaxBodySize();
 private:    
     httpclient_parser m_parser;
     HttpResponse::ptr m_data;           // 作为结果
-    int m_error;                        // 是否有误, 
+    // 1001: invalid version, 1002: invalid field
+    int m_error;                        // 是否有误  
 };
 
 }

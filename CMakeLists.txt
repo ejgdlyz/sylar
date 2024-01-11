@@ -21,6 +21,7 @@ set(LIB_SRC
     sylar/http/http.cc
     sylar/http/http_parser.cc
     sylar/http/http_session.cc
+    sylar/http/http_connection.cc
     sylar/http/http_server.cc
     sylar/http/servlet.cc
     sylar/iomanager.cc
@@ -138,6 +139,16 @@ add_executable(test_http_server tests/test_http_server.cc)
 add_dependencies(test_http_server sylar)
 force_redefine_file_macro_for_sources(test_http_server)  
 target_link_libraries(test_http_server ${LIBS})
+
+add_executable(test_http_connection tests/test_http_connection.cc)
+add_dependencies(test_http_connection sylar)
+force_redefine_file_macro_for_sources(test_http_connection)  
+target_link_libraries(test_http_connection ${LIBS})
+
+add_executable(test_http_conn_serv tests/test_http_conn_serv.cc)
+add_dependencies(test_http_conn_serv sylar)
+force_redefine_file_macro_for_sources(test_http_conn_serv)  
+target_link_libraries(test_http_conn_serv ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

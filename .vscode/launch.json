@@ -19,6 +19,7 @@
 			// "program": "${workspaceFolder}/bin/test_http_parser",
 			// "program": "${workspaceFolder}/bin/echo_server",
 			"program": "${workspaceFolder}/bin/test_http_server",
+			"program": "${workspaceFolder}/bin/test_http_connection",
 			
 
 			"args": [],

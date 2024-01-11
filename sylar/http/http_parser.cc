@@ -14,8 +14,16 @@ static sylar::ConfigVar<uint64_t>::ptr g_http_request_buffer_size =
 static sylar::ConfigVar<uint64_t>::ptr g_http_request_max_body_size = 
     sylar::Config::Lookup("http.request.max_body_size", (uint64_t)(64 * 1024 * 1024), "http request max body size");
 
+static sylar::ConfigVar<uint64_t>::ptr g_http_response_buffer_size = 
+    sylar::Config::Lookup("http.response.buffer.size", (uint64_t)(4 * 1024), "http response buffer_size");
+
+static sylar::ConfigVar<uint64_t>::ptr g_http_response_max_body_size = 
+    sylar::Config::Lookup("http.response.max_body_size", (uint64_t)(64 * 1024 * 1024), "http response max body size");
+    
 static uint64_t s_http_request_buffer_size = 0;
 static uint64_t s_http_request_max_body_size = 0;
+static uint64_t s_http_response_buffer_size = 0;
+static uint64_t s_http_response_max_body_size = 0;
 
 uint64_t HttpRequestParser::GetHttpRequestBufferSize() {
     return s_http_request_buffer_size;
@@ -25,20 +33,42 @@ uint64_t HttpRequestParser::GetHttpRequestMaxBodySize() {
     return s_http_request_max_body_size;
 }
 
+uint64_t HttpResponseParser::GetHttpResponseBufferSize() {
+    return s_http_response_buffer_size;
+}
+
+uint64_t HttpResponseParser::GetHttpResponseMaxBodySize() {
+    return s_http_response_max_body_size;
+}
+
 namespace {
 struct _RequestSizeIniter {
     _RequestSizeIniter() {
         s_http_request_buffer_size = g_http_request_buffer_size->getValue();
         s_http_request_max_body_size = g_http_request_max_body_size->getValue();
+        s_http_response_buffer_size = g_http_response_buffer_size->getValue();
+        s_http_response_max_body_size = g_http_response_max_body_size->getValue();
 
         g_http_request_buffer_size->addListener(
             [](const uint64_t& old_val, const uint64_t& new_val){
                 s_http_request_buffer_size = new_val;
+                
         });
         
         g_http_request_max_body_size->addListener(
             [](const uint64_t& old_val, const uint64_t& new_val){
                 s_http_request_max_body_size = new_val;
+        });
+
+        g_http_response_buffer_size->addListener(
+            [](const uint64_t& old_val, const uint64_t& new_val){
+                s_http_response_buffer_size = new_val;
+                
+        });
+        
+        g_http_response_max_body_size->addListener(
+            [](const uint64_t& old_val, const uint64_t& new_val){
+                s_http_response_max_body_size = new_val;
         });
     }
 };
@@ -109,7 +139,7 @@ void on_request_http_field(void *data, const char *field, size_t flen, const cha
     HttpRequestParser* parser = static_cast<HttpRequestParser*> (data);
     if (flen == 0) {
         SYLAR_LOG_WARN(g_logger) << "invalid http request filed length = 0"; 
-        parser->setError(1002);
+        // parser->setError(1002);
         return;     
     }
     parser->getData()->setHeader(std::string(field, flen), std::string(value, vlen));
@@ -140,7 +170,7 @@ uint64_t HttpRequestParser::getContentLength() {
 // 1: success, -1: error, >0: 已处理的字节数，且 data 有效数据为 len - offset
 size_t HttpRequestParser::execute(char* data, size_t len) {
     size_t offset = http_parser_execute(&m_parser, data, len, 0);
-    memmove(data, data + offset, len - offset);  // 剩余数据移动到内存起始位置
+    memmove(data, data + offset, len - offset);  // 剩余数据拷贝到内存起始位置
     return offset;
 }   
 
@@ -198,7 +228,7 @@ void on_response_http_field(void *data, const char *field, size_t flen, const ch
     HttpResponseParser* parser = static_cast<HttpResponseParser*>(data);
     if (flen == 0) {
         SYLAR_LOG_WARN(g_logger) << "invalid http response filed length = 0"; 
-        parser->setError(1002);
+        // parser->setError(1002);
         return;     
     }
     parser->getData()->setHeader(std::string(field, flen), std::string(value, vlen));
@@ -218,10 +248,14 @@ HttpResponseParser::HttpResponseParser()
     m_parser.data = this;
 }
     
-// http_parser_execute()
-size_t HttpResponseParser::execute(char* data, size_t len) {
+// http_parser_execute(), chunck 表示响应是否分块传输
+size_t HttpResponseParser::execute(char* data, size_t len, bool chunck) {
+    if (chunck) {  // 有分块传输，重新初始化 m_parser 中的数据
+        httpclient_parser_init(&m_parser);
+    }
     size_t offset = httpclient_parser_execute(&m_parser, data, len, 0);
-    memmove(data, data + offset, len - offset);  // 剩余数据移动到内存起始位置，释放空间
+
+    memmove(data, data + offset, len - offset);  // 剩余数据拷贝到内存起始位置
     return offset;
 }  
 
