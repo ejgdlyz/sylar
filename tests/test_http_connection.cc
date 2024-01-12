@@ -36,11 +36,23 @@ void run_test_http_connection() {
     SYLAR_LOG_INFO(g_logger) << "rsp: " << std::endl << *rsp;
     // std::ofstream ofs("http.txt");
     // ofs << *rsp;
+    
+}
+
+// HttpConnection 接口简化测试
+void run_test_http_connection_simple() {
+    SYLAR_LOG_INFO(g_logger) << "===========================";
+
+    sylar::http::HttpResult::ptr res = sylar::http::HttpConnection::DoGet("http://www.sylar.top/blog/", 3000);
+    SYLAR_LOG_INFO(g_logger) << "result = " << res->result 
+            << " status = " << res->error
+            << " rsp = " << (res->response ? res->response->toString() : ""); 
 }
 
 int main(int argc, char const *argv[]) {
-    // sylar::IOManager iom(2);
-    sylar::IOManager iom;
-    iom.schedule(run_test_http_connection);
+    sylar::IOManager iom(2);
+    // sylar::IOManager iom;
+    // iom.schedule(run_test_http_connection);
+    iom.schedule(run_test_http_connection_simple);
     return 0;
 }

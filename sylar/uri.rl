@@ -163,6 +163,11 @@ int32_t Uri::getPort() const {
     return m_port;
 }
 
+const std::string& Uri::getPath() const {
+    static const std::string& s_default_path = "/";
+    return m_path.empty() ? s_default_path : m_path;
+}
+
 
 bool Uri::isDefaultPort() const {
     if (m_port == 0) {
@@ -180,7 +185,7 @@ std::ostream& Uri::dump(std::ostream& os) const {
     os << m_scheme << "://"
         << m_userinfo << (m_userinfo.empty() ? "" : "@")
         << m_host << (isDefaultPort() ? "" : ":" + std::to_string(m_port))
-        << (m_path.empty() ? "/" : m_path)
+        << getPath()
         << (m_query.empty() ? "" : "?") << m_query
         << (m_fragment.empty() ? "" : "#") << m_fragment;
     return os;
