@@ -15,19 +15,19 @@ SocketStream::~SocketStream() {
     }
 }
 
-bool SocketStream::isConnect() const {
+bool SocketStream::isConnected() const {
     return m_socket && m_socket->isConnected();
 }
 
 int SocketStream::read(void* buffer, size_t length) {
-    if (!isConnect()) {
+    if (!isConnected()) {
         return -1;
     }
     return m_socket->recv(buffer, length);
 }
 
 int SocketStream::read(ByteArray::ptr ba, size_t length) {
-    if (!isConnect()) {
+    if (!isConnected()) {
         return -1;
     }
     std::vector<iovec> iovs;
@@ -41,14 +41,14 @@ int SocketStream::read(ByteArray::ptr ba, size_t length) {
 
 // 期望从 Socket 读 length (不确定) 个字节放入 ByteArray
 int SocketStream::write(const void* buffer, size_t length) {
-    if (!isConnect()) {
+    if (!isConnected()) {
         return -1;
     }
     return m_socket->send(buffer, length);
 }
 
 int SocketStream::write(ByteArray::ptr ba, size_t length) {
-    if (!isConnect()) {
+    if (!isConnected()) {
         return -1;
     }
     std::vector<iovec> iovs;
