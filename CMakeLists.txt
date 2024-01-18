@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(cmake/utils.cmake)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined")
+set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -rdynamic -O3 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined")
 
 include_directories(.)
 include_directories(/usr/local/include)  # yaml-cpp
@@ -154,6 +154,11 @@ add_executable(test_uri tests/test_uri.cc)
 add_dependencies(test_uri sylar)
 force_redefine_file_macro_for_sources(test_uri)  
 target_link_libraries(test_uri ${LIBS})
+
+add_executable(my_http_server samples/my_http_server.cc)
+add_dependencies(test_uri sylar)
+force_redefine_file_macro_for_sources(my_http_server)  
+target_link_libraries(my_http_server ${LIBS})
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

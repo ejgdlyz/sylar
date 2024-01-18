@@ -263,7 +263,7 @@ void IOManager::tickle() {
     if (!hasIdleThreads()) {
         return;   
     }
-    SYLAR_LOG_INFO(g_logger) << "IOManager::tick()";
+    // SYLAR_LOG_INFO(g_logger) << "IOManager::tick()";
 
     int rt = write(m_tickleFds[1], "T", 1);
     SYLAR_ASSERT(rt == 1);
@@ -311,7 +311,7 @@ void IOManager::idle() {
             if (rt < 0 && errno == EINTR) {
                 continue;
             } else { 
-                SYLAR_LOG_INFO(g_logger) << "IOManager::wait()";   
+                // SYLAR_LOG_INFO(g_logger) << "IOManager::wait()";
                 break;
             }
 
