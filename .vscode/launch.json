@@ -18,9 +18,10 @@
 			// "program": "${workspaceFolder}/bin/test_bytearray",
 			// "program": "${workspaceFolder}/bin/test_http_parser",
 			// "program": "${workspaceFolder}/bin/echo_server",
-			"program": "${workspaceFolder}/bin/test_http_server",
-			"program": "${workspaceFolder}/bin/test_http_connection",
-			
+			// "program": "${workspaceFolder}/bin/test_http_server",
+			// "program": "${workspaceFolder}/bin/test_http_connection",
+			"program": "${workspaceFolder}/bin/test_daemon",
+
 
 			"args": [],
 			"stopAtEntry": false,

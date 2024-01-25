@@ -28,7 +28,11 @@ static int real_start(int argc, char **argv
 
 static int real_daemeon(int argc, char **argv
         , std::function<int(int argc, char **argv)> main_cb) {
-    daemon(1, 0);
+    int rt = daemon(1, 0);
+    if (rt == -1) {
+        return -1;
+    }
+
     ProcessInfoMgr::GetInstance()->parent_id = getpid();        // 父进程当前进程 id
     ProcessInfoMgr::GetInstance()->parent_start_time = time(0);  // 父进程当前时间
 
