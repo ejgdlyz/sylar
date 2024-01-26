@@ -1,6 +1,8 @@
 #include <string.h>
 #include <iostream>
 #include <iomanip>
+#include <unistd.h>
+#include <stdlib.h>
 #include "env.h"
 #include "log.h"
 
@@ -9,6 +11,19 @@ namespace sylar {
 static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 
 bool Env::init(int argc, char **argv) {
+    char link[1024] = {0}; // 链接路径
+    char path[1024] = {0}; // 真正路径
+    sprintf(link, "/proc/%d/exe", getpid());
+    // 得到链接指向的真正路径 (绝对路径)
+    ssize_t rt = readlink(link, path, sizeof(path));
+    if (rt == -1) {
+        return false;
+    }
+    m_exe= path;  // "/proc/xxx/exe"
+    auto pos = m_exe.find_last_of("/");  // 从尾部开始找 '/'
+    m_cwd = m_exe.substr(0, pos) + "/"; // "/proc/xxx/"
+
+
     m_program = argv[0]; // 程序名
 
     // -config /path/to/config -file xxxx -d
@@ -88,6 +103,18 @@ void Env::printHelper() {
     for (auto& helper: m_helpers) {
         std::cout << std::setw(5) << "-" << helper.first << " : " << helper.second << std::endl;
     }
+}
+
+bool Env::setEnv(const std::string& key, const std::string& val) {
+    return !setenv(key.c_str(), val.c_str(), 1);
+}
+
+std::string Env::getEnv(const std::string& key, const std::string& default_val) const {
+    const char* v = getenv(key.c_str());
+    if (v == NULL) {
+        return default_val;
+    }
+    return v;
 }
 
 }
