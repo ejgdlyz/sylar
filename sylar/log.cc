@@ -729,6 +729,9 @@ struct LogIniter {
                     if (!(new_val == *it)) {
                         // 修改 logger
                         logger = SYLAR_LOG_NAME(new_val.name);  // 找到 logger
+                    } else {
+                        // 相同的 logger 配置, 跳过
+                        continue;
                     }
                 }
 

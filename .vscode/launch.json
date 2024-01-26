@@ -20,7 +20,9 @@
 			// "program": "${workspaceFolder}/bin/echo_server",
 			// "program": "${workspaceFolder}/bin/test_http_server",
 			// "program": "${workspaceFolder}/bin/test_http_connection",
-			"program": "${workspaceFolder}/bin/test_daemon",
+			// "program": "${workspaceFolder}/bin/test_daemon",
+			"program": "${workspaceFolder}/bin/test_config_load",
+
 
 
 			"args": [],

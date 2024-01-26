@@ -375,7 +375,12 @@ public:
         return std::dynamic_pointer_cast<ConfigVar<T>>(it->second);                 // ConfigVarBase -> ConfigVar<T>
     } 
 
+    // 从文件中获取配置
     static void loadFromYaml(const YAML::Node& root);
+    
+    // 获取目录 path 下所有的配置文件
+    static void loadFromConfDir(const std::string& path);
+
 
     static ConfigVarBase::ptr LookupBase(const std::string& name);
 

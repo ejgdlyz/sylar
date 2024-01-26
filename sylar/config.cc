@@ -1,6 +1,12 @@
+#include <sys/stat.h>
 #include "config.h"
+#include "env.h"
+#include "util.h"
+#include "log.h"
 
 namespace sylar {
+
+static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 
 // Config::ConfigVarMap Config::s_data;    
 
@@ -21,7 +27,7 @@ static void ListAllMember(const std::string& prefix,
     
     if (prefix.find_first_not_of("abcdefghigklmnopqrstuvwxyz.012345678_") 
             != std::string::npos) {
-        SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "config invalid name: " << prefix << " : " << node;
+        SYLAR_LOG_ERROR(g_logger) << "config invalid name: " << prefix << " : " << node;
         return;
     }
     output.push_back(std::make_pair(prefix, node));  
@@ -42,7 +48,6 @@ void Config::loadFromYaml(const YAML::Node& root) {
         std::string key = p_node.first;
         if (key.empty()) {
             continue;
-
         }
 
         std::transform(key.begin(), key.end(), key.begin(), ::tolower);
@@ -58,6 +63,38 @@ void Config::loadFromYaml(const YAML::Node& root) {
             }
         }
 
+    }
+}
+
+// 记录文件的最后修改时间
+static std::map<std::string, uint64_t> s_file2modifytime;
+static sylar::Mutex s_mutex;
+
+void Config::loadFromConfDir(const std::string& path) {
+    // 获取 path 绝对路径
+    std::string absolute_path = sylar::EnvMgr::GetInstance()->getAbsolutePath(path);
+    std::vector<std::string> files;
+    FSUtil::ListAllFile(files, absolute_path, ".yml");
+
+    for (auto& file : files) {
+        struct stat st;
+        if (lstat(file.c_str(), &st) == 0) {
+            sylar::Mutex::Lock lock(s_mutex);
+            if (s_file2modifytime[file] == (uint64_t)st.st_mtime) {
+                continue;
+            } else {
+                s_file2modifytime[file] = (uint64_t)st.st_mtime;
+            }
+        }
+
+        try {
+            YAML::Node root = YAML::LoadFile(file);
+            loadFromYaml(root);
+            SYLAR_LOG_INFO(g_logger) << "LoadConfFile file=" << file << " ok.";
+        }
+        catch(...) {
+            SYLAR_LOG_ERROR(g_logger) << "LoadConfFile file=" << file << " falied.";
+        }
     }
 }
 

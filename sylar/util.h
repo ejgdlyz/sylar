@@ -26,6 +26,13 @@ uint64_t GetCurretMS();
 uint64_t GetCurretUS();
 
 std::string Time2Str(time_t ts = time(0), const std::string& format = "%Y-%m-%d %H:%M:%S");
+
+class FSUtil {
+public:
+    // 返回 path 下所有的后缀名为 subfix 的 所有文件名
+    static void ListAllFile(std::vector<std::string>& files, const std::string& path, const std::string& subfix);
+};
+
 }
 
 

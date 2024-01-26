@@ -1,5 +1,8 @@
 #include <execinfo.h>
 #include <sys/time.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <string.h>
 #include "util.h"
 #include "log.h"
 #include "fiber.h"
@@ -67,6 +70,43 @@ std::string Time2Str(time_t ts, const std::string& format) {
     char buf[64];
     strftime(buf, sizeof(buf), format.c_str(), &tm);
     return buf;
+}
+
+void FSUtil::ListAllFile(std::vector<std::string>& files, 
+        const std::string& path, const std::string& subfix) {
+    if (access(path.c_str(), 0) != 0) {
+        // 文件路径不存在
+        return;
+    }
+
+    DIR* dir = opendir(path.c_str());
+    if (dir == nullptr) {
+        return;
+    }
+    struct dirent* dt = nullptr;
+    while ((dt = readdir(dir)) != nullptr) {
+        if (dt->d_type == DT_DIR) {
+            // 文件夹，继续读
+            if (!strcmp(dt->d_name, ".") || !strcmp(dt->d_name, "..")) {
+                continue;
+            }
+            ListAllFile(files, path + "/" + dt->d_name, subfix);
+        } else if(dt->d_type == DT_REG) {
+            // 正常的文件
+            std::string filename(dt->d_name);
+            if (subfix.empty()) {
+                files.push_back(path + "/" + filename);
+            } else {
+                if (filename.size() < subfix.size()) {
+                    continue;
+                }
+                if (filename.substr(filename.length() - subfix.size()) == subfix) {
+                    files.push_back(path + "/" + filename);
+                }
+            }
+        }
+    }
+    closedir(dir);
 }
 
 }
