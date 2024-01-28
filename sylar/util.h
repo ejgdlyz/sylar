@@ -31,6 +31,8 @@ class FSUtil {
 public:
     // 返回 path 下所有的后缀名为 subfix 的 所有文件名
     static void ListAllFile(std::vector<std::string>& files, const std::string& path, const std::string& subfix);
+    static bool Mkdir(const std::string& dirname);
+    static bool IsRunningPidfile(const std::string& pidfile);
 };
 
 }
