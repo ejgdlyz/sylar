@@ -1,0 +1,9 @@
+http_servers:
+    - address: ["0.0.0.0:8080"]
+      keepalive: 1      # 是否长连接
+      timeout: 1000     # tcp server recv timeout
+      name: sylar/1.1   # server 名称
+    - address: ["0.0.0.0:8070"]
+      keepalive: 1      
+      timeout: 1000     
+      name: sylar/2.1      

@@ -21,11 +21,10 @@
 			// "program": "${workspaceFolder}/bin/test_http_server",
 			// "program": "${workspaceFolder}/bin/test_http_connection",
 			// "program": "${workspaceFolder}/bin/test_daemon",
-			"program": "${workspaceFolder}/bin/test_config_load",
+			// "program": "${workspaceFolder}/bin/test_config_load",
+			"program": "${workspaceFolder}/bin/test_application",
 
-
-
-			"args": [],
+			"args": ["-s"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

@@ -175,12 +175,10 @@ force_redefine_file_macro_for_sources(test_env)
 target_link_libraries(test_env ${LIBS})
 
 add_executable(test_config_load tests/test_config_load.cc)
-<<<<<<< HEAD
 add_dependencies(test_uri sylar)
 force_redefine_file_macro_for_sources(test_config_load)  
 target_link_libraries(test_config_load ${LIBS})
 
-=======
 add_dependencies(test_config_load sylar)
 force_redefine_file_macro_for_sources(test_config_load)  
 target_link_libraries(test_config_load ${LIBS})
@@ -190,6 +188,5 @@ add_dependencies(test_application sylar)
 force_redefine_file_macro_for_sources(test_application)  
 target_link_libraries(test_application ${LIBS})
 
->>>>>>> 9f9c9b8 (application 基本实现与测试)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
