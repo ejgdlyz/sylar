@@ -1,5 +1,6 @@
-#ifndef __SYLAR_LOG_H
-#define __SYLAR_LOG_H
+#ifndef __SYLAR_LOG_H__
+#define __SYLAR_LOG_H__
+
 #include <string>
 #include <stdint.h>
 #include <memory>
@@ -86,16 +87,16 @@ public:
     void format(const char* fmt, ...);  // format 方式输出日志
     void format(const char* fmt, va_list al);
 private:
-    const char* m_file = nullptr;  // 文件名
-    int32_t m_line = 0;            // 行号
-    uint32_t m_elapse = 0;         // 程序运行的毫秒数
-    uint32_t m_threadId = 0;       // 线程 id
-    std::string m_threadName;      // 线程名
-    uint32_t m_fiberId = 0;        // 协程 id
-    uint64_t m_time;               // 时间戳
-    std::stringstream m_ss;        // 流内容
+    const char* m_file = nullptr;       // 文件名
+    int32_t m_line = 0;                 // 行号
+    uint32_t m_elapse = 0;              // 程序运行的毫秒数
+    uint32_t m_threadId = 0;            // 线程 id
+    std::string m_threadName;           // 线程名
+    uint32_t m_fiberId = 0;             // 协程 id
+    uint64_t m_time;                    // 时间戳
+    std::stringstream m_ss;             // 消息内容
 
-    std::shared_ptr<Logger> m_logger;  // 析构时输出自身
+    std::shared_ptr<Logger> m_logger;   // 析构时输出自身
     LogLevel::Level m_level;
 };
 
@@ -105,7 +106,7 @@ public:
     LogEventWrap(LogEvent::ptr event);
     ~LogEventWrap();
     
-    std::stringstream& getSS();
+    std::stringstream& getSS();     // 消息内容
     LogEvent::ptr getEvent() const { return m_event;}
 
 private:

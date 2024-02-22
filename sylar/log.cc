@@ -526,7 +526,7 @@ void LogFormatter::init() {
                 m_error = true;   // 解析失败
             
             } else {
-                m_items.push_back(it->second(std::get<1>(tuple_v)));  // like,  "m" 对应的 MessageFormatterItem 放入 m_items 
+                m_items.push_back(it->second(std::get<1>(tuple_v)));  // like,  "m" 对应的 it->second(str) 函数对象返回值 MessageFormatterItem::ptr 放入 m_items 
             }
         }
 

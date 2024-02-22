@@ -57,7 +57,14 @@ HttpRequest::HttpRequest(uint8_t version, bool close)
     :m_method(HttpMethod::GET)
     ,m_version(version)
     ,m_close(close)
+    ,m_websocket(false)
     ,m_path("/"){
+}
+
+std::shared_ptr<HttpResponse> HttpRequest::createResponse() {
+    HttpResponse::ptr rsp(new HttpResponse(getVersion()
+                            ,isClose()));
+    return rsp;
 }
 
 // 从 Headers 取数据
@@ -149,10 +156,12 @@ std::ostream& HttpRequest::dump(std::ostream& os) const{
             << " HTTP/" << ((uint32_t)(m_version >> 4)) << "." << ((uint32_t)(m_version & 0x0F))
             << "\r\n";
 
-    os << "connect: " << (m_close ? "close" : "keep-alive") << "\r\n";
+    if (!m_websocket) {
+        os << "connect: " << (m_close ? "close" : "keep-alive") << "\r\n";
+    }
 
     for (auto& header : m_headers) {
-        if (strcasecmp(header.first.c_str(), "connection") == 0) {
+        if (!m_websocket && strcasecmp(header.first.c_str(), "connection") == 0) {
             continue;
         }
         os << header.first << ": " << header.second << "\r\n";
@@ -187,7 +196,8 @@ void HttpRequest::init() {
 HttpResponse::HttpResponse(uint8_t version, bool close)
     :m_status(HttpStatus::OK)
     ,m_version(version)
-    ,m_close(close) {
+    ,m_close(close)
+    ,m_websocket(false) {
 }
 
 // 从 Headers 取数据
@@ -209,13 +219,15 @@ std::ostream& HttpResponse::dump(std::ostream& os) const {
         << (uint32_t)m_status << " " <<  (m_reason.empty() ? HttpStatusToString(m_status) : m_reason) << "\r\n";
 
     for (auto& header : m_headers) {
-        if (strcasecmp(header.first.c_str(), "connection") == 0) {
+        if (!m_websocket && strcasecmp(header.first.c_str(), "connection") == 0) {
             continue;
         }
         os << header.first << ": " << header.second << "\r\n";
     }
 
-    os << "connection: " << (m_close ? "close" : "keep-alive") << "\r\n";
+    if (!m_websocket) {
+        os << "connection: " << (m_close ? "close" : "keep-alive") << "\r\n";
+    }
 
     if (!m_body.empty()) {
         os << "content-length: " << m_body.size() << "\r\n\r\n" 

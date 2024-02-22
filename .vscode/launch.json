@@ -8,7 +8,7 @@
 			"name": "sylar_debug",//!挑个容易识别的名字
 			"type": "cppdbg",
 			"request": "launch",
-			// "program": "${workspaceFolder}/bin/test",
+			// "program": "${workspaceFolder}/bin/test_logger",
 			// "program": "${workspaceFolder}/bin/test_config",
 			// "program": "${workspaceFolder}/bin/test_fiber",
 			// "program": "${workspaceFolder}/bin/test_scheduler",
@@ -22,9 +22,13 @@
 			// "program": "${workspaceFolder}/bin/test_http_connection",
 			// "program": "${workspaceFolder}/bin/test_daemon",
 			// "program": "${workspaceFolder}/bin/test_config_load",
-			"program": "${workspaceFolder}/bin/test_application",
+			// "program": "${workspaceFolder}/bin/test_application",
+			// "program": "${workspaceFolder}/bin/test_websocket",
+			// "program": "${workspaceFolder}/bin/test_ws_client",
+			"program": "${workspaceFolder}/bin/test_ws_server",
 
-			"args": ["-s"],
+			
+			"args": [],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

@@ -110,7 +110,7 @@ int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
 
     // 设置 Fd 上下文的状态
     FdContext::MutexType::Lock lock(fd_context->mutex);
-    if (fd_context->events & event) {      // 同一类型事件加过了
+    if (SYLAR_UNLIKELY(fd_context->events & event)) {      // 同一类型事件加过了
         SYLAR_LOG_ERROR(g_logger) << "addEvent assert fd = " << fd
                 << " evnet = " << event
                 << " fd_context.event = " << fd_context->events;
@@ -156,7 +156,7 @@ bool IOManager::delEvent(int fd, Event event) {
     rd_lock.unlock();
 
     FdContext::MutexType::Lock lock(fd_ctx->mutex);
-    if (!(fd_ctx->events & event)) { // 没有此事件
+    if (SYLAR_UNLIKELY(!(fd_ctx->events & event))) { // 没有此事件
         return false;
     }
     
@@ -191,7 +191,7 @@ bool IOManager::cancelEvent(int fd, Event event) { // 取消事件, 找到事件
     rd_lock.unlock();
 
     FdContext::MutexType::Lock lock(fd_ctx->mutex);
-    if (!(fd_ctx->events & event)) { // 没有此事件
+    if (SYLAR_UNLIKELY(!(fd_ctx->events & event))) { // 没有此事件
         return false;
     }
     
@@ -286,12 +286,14 @@ bool IOManager::stopping() {
 
 // @override, 线程空闲时，陷入 idle, 即 epoll_wait
 void IOManager::idle() {
-    epoll_event* events = new epoll_event[64]();  // 保存发生事件的 fd 结构体集合
+    // SYLAR_LOG_DEBUG(g_logger) << "idle";
+    const uint64_t MAX_EVNETS = 256;
+    epoll_event* events = new epoll_event[MAX_EVNETS]();  // 保存发生事件的 fd 结构体集合
     std::shared_ptr<epoll_event> shared_events(events, [](epoll_event* ptr){ delete[] ptr;});
 
     while (true) {
         uint64_t next_timeout = 0;      // 堆顶定时器过期剩余时间
-        if (stopping(next_timeout)) {
+        if (SYLAR_UNLIKELY(stopping(next_timeout))) {
             SYLAR_LOG_INFO(g_logger) << "name = " << getName() 
                     << " idle stopping exit";
             break;  
@@ -306,7 +308,7 @@ void IOManager::idle() {
             } else {
                 next_timeout = MAX_TIMEOUT;
             }
-            rt = epoll_wait(m_epollfd, events, 64, (int)next_timeout);
+            rt = epoll_wait(m_epollfd, events, MAX_EVNETS, (int)next_timeout);
 
             if (rt < 0 && errno == EINTR) {
                 continue;
@@ -329,8 +331,8 @@ void IOManager::idle() {
         for (int i = 0; i < rt; ++i) {
             epoll_event& event = events[i];
             if (event.data.fd == m_tickleFds[0]) {  // tick() 的消息无意义，跳过
-                uint8_t dummy;
-                while (read(m_tickleFds[0], &dummy, 1) == 1);
+                uint8_t dummy[256];
+                while (read(m_tickleFds[0], dummy, sizeof(dummy)) > 0);
                 continue;
             }
 
@@ -365,12 +367,12 @@ void IOManager::idle() {
 
             // 触发事件
             
-            if (real_events & READ) {  // 读事件 
+            if (fd_ctx->events & READ) {  // 读事件 
                 fd_ctx->triggerEvent(READ);
                 --m_pendingEventCount;
             }
             
-            if (real_events & WRITE) {  // 写事件 
+            if (fd_ctx->events & WRITE) {  // 写事件 
                 fd_ctx->triggerEvent(WRITE);
                 --m_pendingEventCount;
             } 

@@ -7,6 +7,7 @@
 #include "fiber.h"
 #include "iomanager.h"
 #include "fd_manager.h"
+#include "macro.h"
 
 static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 
@@ -137,7 +138,7 @@ retry:
         }
 
         int rt  = iom->addEvent(fd, (sylar::IOManager::Event)(event));
-        if (rt) { // fail to add Event
+        if (SYLAR_UNLIKELY(rt)) { // fail to add Event
             SYLAR_LOG_ERROR(g_logger) << hook_fun_name << " addEvent(" 
                     << fd << ", " << event <<")";
 

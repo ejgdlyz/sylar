@@ -12,6 +12,16 @@ include_directories(.)
 include_directories(/usr/local/include)  # yaml-cpp
 link_directories(/usr/local/lib)  # 类库
 
+find_package(Boost REQUIRED)
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+endif()
+
+find_package(OpenSSL REQUIRED)
+if(OPENSSL_FOUND)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+endif()
+
 set(LIB_SRC
     sylar/address.cc
     sylar/application.cc
@@ -28,6 +38,10 @@ set(LIB_SRC
     sylar/http/http_connection.cc
     sylar/http/http_server.cc
     sylar/http/servlet.cc
+    sylar/http/ws_session.cc
+    sylar/http/ws_connection.cc
+    sylar/http/ws_server.cc
+    sylar/http/ws_servlet.cc
     sylar/iomanager.cc
     sylar/log.cc
     sylar/scheduler.cc
@@ -38,6 +52,7 @@ set(LIB_SRC
     sylar/thread.cc
     sylar/timer.cc
     sylar/util.cc
+    sylar/util/hash_util.cc
     )
 
 ragelmaker(sylar/http/http11_parser.rl LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sylar/http)
@@ -49,19 +64,22 @@ force_redefine_file_macro_for_sources(sylar)  # redefined __FILE__ as relative p
 
 find_library(YAMLCPP yaml-cpp)
 find_library(PTHREAD pthread)
+find_library(JSONCPP libjsoncpp)
 
 set(LIBS
         sylar
         dl
         pthread
-        yaml-cpp)
+        yaml-cpp
+        ${OPENSSL_LIBRARIES}
+        )
 
 # message("***", ${LIBS})
 
-add_executable(test tests/test.cc)
-add_dependencies(test sylar)
-force_redefine_file_macro_for_sources(test)  # redefined __FILE__ as relative path for test
-target_link_libraries(test ${LIBS})
+add_executable(test_logger tests/test_logger.cc)
+add_dependencies(test_logger sylar)
+force_redefine_file_macro_for_sources(test_logger)  # redefined __FILE__ as relative path for test
+target_link_libraries(test_logger ${LIBS})
 
 
 add_executable(test_config tests/test_config.cc)
@@ -188,5 +206,20 @@ add_dependencies(test_application sylar)
 force_redefine_file_macro_for_sources(test_application)  
 target_link_libraries(test_application ${LIBS})
 
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+add_executable(test_websocket tests/test_websocket.cc)
+add_dependencies(test_websocket sylar)
+force_redefine_file_macro_for_sources(test_websocket)  
+target_link_libraries(test_websocket ${LIBS})
+
+add_executable(test_ws_client tests/test_ws_client.cc)
+add_dependencies(test_ws_client sylar)
+force_redefine_file_macro_for_sources(test_ws_client)  
+target_link_libraries(test_ws_client ${LIBS})
+
+add_executable(test_ws_server tests/test_ws_server.cc)
+add_dependencies(test_ws_server sylar)
+force_redefine_file_macro_for_sources(test_ws_server)  
+target_link_libraries(test_ws_server ${LIBS})
+
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)   # 可执行文件路径
+SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)      # 动态库路径

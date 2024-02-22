@@ -4,7 +4,7 @@
 namespace sylar {
 
 bool Timer::Comparator::operator()(const Timer::ptr& lhs, const Timer::ptr& rhs) const {
-    if (!rhs && !rhs) {
+    if (!lhs && !rhs) {
         return false;
     }
     if (!lhs) {
