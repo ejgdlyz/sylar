@@ -24,8 +24,8 @@
 			// "program": "${workspaceFolder}/bin/test_config_load",
 			// "program": "${workspaceFolder}/bin/test_application",
 			// "program": "${workspaceFolder}/bin/test_websocket",
-			// "program": "${workspaceFolder}/bin/test_ws_client",
-			"program": "${workspaceFolder}/bin/test_ws_server",
+			"program": "${workspaceFolder}/bin/test_ws_client",
+			// "program": "${workspaceFolder}/bin/test_ws_server",
 
 			
 			"args": [],
