@@ -1,5 +1,6 @@
 #include "sylar/config.h"
 #include "sylar/log.h"
+#include "sylar/env.h"
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 
@@ -235,7 +236,11 @@ void test_config_Visit() {
     });  
 }
 
-int main(int argc, char const *argv[])
+void test_loadconf() {
+    sylar::Config::loadFromConfDir("conf");
+}
+
+int main(int argc, char *argv[])
 {
     // SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << g_int_value_config->getValue();
     // SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << g_float_value_config->toString();
@@ -250,9 +255,15 @@ int main(int argc, char const *argv[])
 
     // test_class();
 
-    test_logger_config();
+    // test_logger_config();
 
-    test_config_Visit();
+    // test_config_Visit();
+
+    sylar::EnvMgr::GetInstance()->init(argc, argv);
+    test_loadconf();
+    std::cout << " ===== " << std::endl;
+    sleep(10);
+    test_loadconf();
 
     return 0;
 }

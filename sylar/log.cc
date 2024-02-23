@@ -1,9 +1,12 @@
-#include "log.h"
 #include <iostream>
 #include <functional>
 #include <time.h>
 #include <string.h>
+#include "log.h"
 #include "config.h"
+#include "util.h"
+#include "macro.h"
+#include "env.h"
 
 namespace sylar
 {
@@ -353,13 +356,16 @@ FileLogAppender::FileLogAppender(const std::string& filename)
 
 void FileLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
     if (level >= m_level){
-        uint64_t now = time(0);
-        if (now != m_lastTime) {
+        uint64_t now = event->getTime();
+        if (now >= (m_lastTime + 3)) {
             reopen(); 
             m_lastTime = now; 
         }
         MutexType::Lock lock(m_mutex);
-        m_filestream << m_formatter->format(logger, level, event);
+        // m_filestream << m_formatter->format(logger, level, event);
+        if (!m_formatter->format(m_filestream, logger, level, event)) {
+            std::cout << "FileLogAppender::log error" << std::endl;
+        }
     }
 }
 
@@ -385,13 +391,15 @@ bool FileLogAppender::reopen() {
         m_filestream.close();
     }
     m_filestream.open(m_filename);
-    return !!m_filestream;
+    // return !!m_filestream;
+    return FSUtil::OpenForWrite(m_filestream, m_filename, std::ios::app);
 }
 
 void StdoutLogAppender::log(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
     if (level >= m_level) {
         MutexType::Lock lock(m_mutex);
-        std::cout << m_formatter->format(logger, level, event);  // 得到基类 LogFormatter::format() 返回的 string
+        // std::cout << m_formatter->format(logger, level, event);  // 得到基类 LogFormatter::format() 返回的 string
+        m_formatter->format(std::cout, logger, level, event);
     }
 }
 
@@ -421,6 +429,13 @@ std::string LogFormatter::format(std::shared_ptr<Logger> logger, LogLevel::Level
         formatter_item->format(ss, logger, level, event);  // 解析后的各个字符对应的特定类内容，输出到字符流中, like DateTimeFormatterItem、StringFormatterItem 
     }
     return ss.str();
+}
+
+std::ostream& LogFormatter::format(std::ostream& ofs, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event) {
+    for (auto& formatter_item : m_items) {
+        formatter_item->format(ofs, logger, level, event);
+    }
+    return ofs;
 }
 
 // %xxx、%xxx{xxx}、 %%。 其余认为是非法的 
@@ -747,7 +762,11 @@ struct LogIniter {
                     if (appender_d.type == 1)  {        // File
                         ap.reset(new FileLogAppender(appender_d.file));
                     } else if (appender_d.type == 2) {  // Stdout
-                        ap.reset(new StdoutLogAppender);
+                        if (!sylar::EnvMgr::GetInstance()->has("d")) {  // 不为守护进程
+                            ap.reset(new StdoutLogAppender); 
+                        } else {
+                            continue;
+                        }
                     }
                     ap->setLevel(appender_d.level);
                     

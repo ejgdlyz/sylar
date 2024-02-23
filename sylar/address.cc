@@ -92,7 +92,7 @@ bool Address::Lookup(std::vector<Address::ptr>& result, const std::string& host,
     }
     int error = getaddrinfo(node.c_str(), service, &hints, &results);
     if (error) {
-        SYLAR_LOG_ERROR(g_logger) << "Address::Lookup getaddrinfo(" << host << ","
+        SYLAR_LOG_DEBUG(g_logger) << "Address::Lookup getaddrinfo(" << host << ","
             << family << ", " << type << ") err = " << errno << " errstr=" << strerror(errno);
         return false;
     }
@@ -111,7 +111,7 @@ bool Address::GetInterfaceAddresses(std::multimap<std::string, std::pair<Address
                                 int family) {
     struct ifaddrs *next, *results;
     if (getifaddrs(&results) != 0) {
-        SYLAR_LOG_ERROR(g_logger) << "Address::GetInterfaceAddresses getifaddrs"
+        SYLAR_LOG_DEBUG(g_logger) << "Address::GetInterfaceAddresses getifaddrs"
                 << " errno = " << errno << " errstr=" << strerror(errno);
         return false;
     }
@@ -253,7 +253,7 @@ IPAddress::ptr IPAddress::Create(const char* address, uint16_t port) {
 
     int error = getaddrinfo(address, NULL, &hints, &results);
     if (error) {
-        SYLAR_LOG_ERROR(g_logger) << "IPvAddress::Create(" << address << ", "
+        SYLAR_LOG_DEBUG(g_logger) << "IPvAddress::Create(" << address << ", "
                 << port << ") errno=" << errno 
                 << " errstr=" << strerror(errno);
         return nullptr;
@@ -290,7 +290,7 @@ IPv4Address::ptr IPv4Address::Create(const char* address, uint16_t port) {
     rt->m_addr.sin_port = byteswapOnLittleEndian(port);
     int result = inet_pton(AF_INET, address, &rt->m_addr.sin_addr);
     if (result <= 0) {
-        SYLAR_LOG_ERROR(g_logger) << "IPv4Address::Create(" << address << ", "
+        SYLAR_LOG_DEBUG(g_logger) << "IPv4Address::Create(" << address << ", "
                 << port << ") rt = " << result << " errno=" << errno 
                 << " errstr=" << strerror(errno);
         return nullptr;
@@ -383,7 +383,7 @@ IPv6Address::ptr IPv6Address::Create(const char* address, uint16_t port) {
     rt->m_addr.sin6_port = byteswapOnLittleEndian(port);
     int result = inet_pton(AF_INET6, address, &rt->m_addr.sin6_addr);
     if (result <= 0) {
-        SYLAR_LOG_ERROR(g_logger) << "IPv6Address::Create(" << address << ", "
+        SYLAR_LOG_DEBUG(g_logger) << "IPv6Address::Create(" << address << ", "
                 << port << ") rt = " << result << " errno=" << errno 
                 << " errstr=" << strerror(errno);
         return nullptr;

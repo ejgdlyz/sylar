@@ -121,6 +121,7 @@ public:
 
     // %t   %thread_id %m%n ...
     std::string format(std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);   // 将 LogEvent format 为一个 string 提供给 LogAppender 输出
+    std::ostream& format(std::ostream& ofs, std::shared_ptr<Logger> logger, LogLevel::Level level, LogEvent::ptr event);
 public:
     class FormatterItem {
     public:
