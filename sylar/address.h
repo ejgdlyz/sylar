@@ -125,6 +125,7 @@ public:
     sockaddr* getAddr() override;
     socklen_t getAddrLen() const override;
     void setAddrLen(uint32_t v);
+    std::string getPath() const;
     std::ostream& insert(std::ostream& os) const override;   // 序列化 
 
 private:

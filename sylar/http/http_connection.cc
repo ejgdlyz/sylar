@@ -242,14 +242,14 @@ HttpResult::ptr HttpConnection::DoRequest(HttpMethod method, Uri::ptr uri, int64
 // 最终所有方法的实现
 HttpResult::ptr HttpConnection::DoRequest(HttpRequest::ptr req
         , Uri::ptr uri, int64_t timeout_ms) {
-    
+    bool is_ssl = uri->getScheme() == "https";
     Address::ptr addr = uri->createAddress();
     if (!addr) {
         return std::make_shared<HttpResult>((int)HttpResult::Status::INVALID_HOST, nullptr,
                  "invalid_host: " + uri->getHost());
     }
 
-    Socket::ptr sock = Socket::CreateTCP(addr);
+    Socket::ptr sock = is_ssl ? SSLSocket::CreateTCP(addr) : Socket::CreateTCP(addr);
     if (!sock) {
         return std::make_shared<HttpResult>((int)HttpResult::Status::CREATE_SOCKET_ERROR, nullptr,
                 "create socket failure: " + addr->toString() +
@@ -282,11 +282,21 @@ HttpResult::ptr HttpConnection::DoRequest(HttpRequest::ptr req
 }
 
 // HttpConnectionPool 方法实现
+HttpConnectionPool::ptr HttpConnectionPool::Create(const std::string& uri, const std::string& vhost
+        , uint32_t max_size, uint32_t max_alive_time, uint32_t max_request) {
+    Uri::ptr turi = Uri::Create(uri);
+    if (!turi) {
+        SYLAR_LOG_ERROR(g_logger) << "invalid uri=" << uri;
+    }
+    return std::make_shared<HttpConnectionPool>(turi->getHost(), vhost, turi->getPort()
+            , turi->getScheme() == "https", max_size, max_alive_time, max_request);
+}
 
-HttpConnectionPool::HttpConnectionPool(const std::string& host, const std::string& vhost, uint32_t port,
-        uint32_t max_size, uint32_t max_alive_time, uint32_t max_request)
-        :m_host(host), m_vhost(vhost), m_port(port), m_maxSize(max_size), m_maxAliveTime(max_alive_time)
-        ,m_maxRequest(max_request)  {
+HttpConnectionPool::HttpConnectionPool(const std::string& host, const std::string& vhost, uint32_t port
+        , bool is_https, uint32_t max_size, uint32_t max_alive_time, uint32_t max_request)
+    : m_host(host), m_vhost(vhost), m_port(port ? port : (is_https ? 443 : 80))
+    , m_maxSize(max_size), m_maxAliveTime(max_alive_time)
+    , m_maxRequest(max_request), m_isHttps(is_https)  {
 }
 
 HttpConnection::ptr HttpConnectionPool::getConnection() {
@@ -322,7 +332,7 @@ HttpConnection::ptr HttpConnectionPool::getConnection() {
             return nullptr; 
         }    
         addr->setPort(m_port);
-        Socket::ptr sock = Socket::CreateTCP(addr);
+        Socket::ptr sock = m_isHttps ? SSLSocket::CreateTCP(addr) : Socket::CreateTCP(addr);
         if (!sock) {
             SYLAR_LOG_ERROR(g_logger) << "create sock failure: " << *addr;
             return nullptr;

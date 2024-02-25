@@ -9,29 +9,6 @@ static thread_local std::string t_thread_name = "UNKNOW";
 
 static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");  // system 统一为系统日志
 
-Semaphore::Semaphore(uint32_t count) {
-    if (sem_init(&m_semaphore, 0, count)) {
-        throw std::logic_error("sem_init error");
-    }
-}
-
-Semaphore::~Semaphore() {
-    sem_destroy(&m_semaphore);
-}
-
-
-void Semaphore::wait() {
-    if (sem_wait(&m_semaphore)) {  // return 0 on success, -1 on failing   
-        throw std::logic_error("sem_wait error");
-    }
-}
-
-void Semaphore::notify() {
-    if (sem_post(&m_semaphore)) {
-        throw std::logic_error("sem_post error");
-    }
-}
-
 Thread* Thread::GetThis() {  // 获得当前线程引用
     return t_thread;
 }

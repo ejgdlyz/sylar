@@ -44,6 +44,7 @@ set(LIB_SRC
     sylar/http/ws_servlet.cc
     sylar/iomanager.cc
     sylar/log.cc
+    sylar/mutex.cc
     sylar/scheduler.cc
     sylar/socket.cc
     sylar/stream.cc
@@ -53,6 +54,7 @@ set(LIB_SRC
     sylar/timer.cc
     sylar/util.cc
     sylar/util/hash_util.cc
+    sylar/worker.cc
     )
 
 ragelmaker(sylar/http/http11_parser.rl LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sylar/http)

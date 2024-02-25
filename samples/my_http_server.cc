@@ -8,14 +8,20 @@ void run() {
     sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("0.0.0.0:8020");
     if (!addr) {
         SYLAR_LOG_ERROR(g_logger) << "get address error";
-        return;
+        return; 
     }
     sylar::http::HttpServer::ptr http_server(new sylar::http::HttpServer(false));  // false: 短链接
     // sylar::http::HttpServer::ptr http_server(new sylar::http::HttpServer(true));  // true:  长连接
-    while(!http_server->bind(addr)) {
+    bool ssl = false;
+    while(!http_server->bind(addr, ssl)) {
         SYLAR_LOG_ERROR(g_logger) << "bind" << *addr << " failture";
         sleep(1);
     }
+
+    if (ssl) {
+        //http_server->loadCertificates("/home/apps/soft/sylar/keys/server.crt", "/home/apps/soft/sylar/keys/server.key");
+    }
+    
     http_server->start();
 }
 

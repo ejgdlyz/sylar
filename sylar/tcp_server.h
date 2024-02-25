@@ -119,8 +119,8 @@ public:
 
     uint64_t getRecvTimeout() const { return m_recvTimeout;}
     std::string getName() const { return m_name;}
-    void setRecvTimeout(uint64_t v) { m_recvTimeout = v;}
-    void setName(const std::string& v) { m_name = v;}
+    void setRecvTimeout(uint64_t v) { m_recvTimeout = v;}  
+    virtual void setName(const std::string& v) { m_name = v;}  
     bool isStop() const { return m_isStop;}
 
 protected:

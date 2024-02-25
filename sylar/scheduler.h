@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 #include <functional>
-#include <atomic>
 #include <list>
+#include <iostream>
 #include "fiber.h"
 #include "thread.h"
 
@@ -59,6 +59,9 @@ public:
         }
 
     }
+
+    void switchTo(int thread = -1);
+    std::ostream& dump(std::ostream& os);
 
 protected:
     virtual void tickle();
@@ -133,6 +136,13 @@ protected:
     int m_rootThread = 0;               // 主线程 id et. use_caller's id
 };
 
+class SchedulerSwitcher : public NonCopyable {
+public:
+    SchedulerSwitcher(Scheduler* target = nullptr);
+    ~SchedulerSwitcher();
+private:
+    Scheduler* m_caller;
+};
 }
 
 #endif  // __SYLAT_SCHEDULER_H__

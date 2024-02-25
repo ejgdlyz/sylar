@@ -523,6 +523,17 @@ std::ostream& UnixAddress::insert(std::ostream& os) const {
     return os << m_addr.sun_path;
 } 
 
+std::string UnixAddress::getPath() const {
+    std::stringstream ss;
+    if (m_length > offsetof(sockaddr_un, sun_path) 
+            && m_addr.sun_path[0] == '\0') {
+        ss << "\\0" << std::string(m_addr.sun_path + 1
+            , m_length - offsetof(sockaddr_un, sun_path) - 1);
+    } else {
+        ss << m_addr.sun_path;
+    }
+    return ss.str();
+}
 
 UnknownAddress::UnknownAddress(int family) {
     memset(&m_addr, 0, sizeof(m_addr));

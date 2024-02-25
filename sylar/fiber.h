@@ -4,7 +4,6 @@
 #include <ucontext.h>
 #include <memory>
 #include <functional>
-#include "thread.h"
 
 namespace sylar {
 

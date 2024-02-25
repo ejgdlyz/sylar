@@ -3,8 +3,9 @@
 
 #include <string.h>
 #include <assert.h>
-#include "util.h"
 #include <cassert>
+#include "util.h"
+#include "log.h"
 
 #if defined __GNUC__ || defined __llvm__
 #       define SYLAR_LIKELY(x)          __builtin_expect(!!(x), 1)

@@ -20,11 +20,15 @@ struct HttpServerConf {
     std::vector<std::string> addrs;
     int keepalive = 0;
     int timeout = 1000 * 2 * 60;
+    int ssl = 0;
     std::string name = "sylar/0.0";
+    std::string cert_file;
+    std::string key_file;
     
     bool operator==(const HttpServerConf& rhs) const {
-        return addrs == rhs.addrs && keepalive == rhs.keepalive && timeout == rhs.timeout
-                && name == rhs.name;
+        return addrs == rhs.addrs && keepalive == rhs.keepalive 
+                && timeout == rhs.timeout && name == rhs.name && ssl == rhs.ssl
+                && cert_file == rhs.cert_file && key_file == rhs.key_file;
     }
 
     bool isValid() const {
@@ -42,6 +46,9 @@ public:
         conf.keepalive = node["keepalive"].as<int>(conf.keepalive);  // 放一个默认值，防止配置文件中不存在 
         conf.timeout = node["timeout"].as<int>(conf.timeout);
         conf.name = node["name"].as<std::string>(conf.name);
+        conf.ssl = node["ssl"].as<int>(conf.ssl);
+        conf.cert_file = node["cert_file"].as<std::string>(conf.cert_file);
+        conf.key_file = node["key_file"].as<std::string>(conf.key_file);
         if (node["address"].IsDefined()) {
             for (size_t i = 0; i < node["address"].size(); ++i) {
                 conf.addrs.push_back(node["address"][i].as<std::string>());
@@ -60,6 +67,9 @@ public:
         node["name"] = conf.name;
         node["keepalive"] = conf.keepalive;
         node["timeout"] = conf.timeout;
+        node["ssl"] = conf.ssl;
+        node["cert_file"] = conf.cert_file;
+        node["key_file"] = conf.key_file;
         for (auto& addr : conf.addrs) {
             node["address"].push_back(addr);
         }
@@ -195,12 +205,20 @@ int Application::run_fiber() {
         // 创建 httpserver
         sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(conf.keepalive));
         std::vector<Address::ptr> failed_addrs;
-        if (!server->bind(p_addrs, failed_addrs)) {
+        if (!server->bind(p_addrs, failed_addrs, conf.ssl)) {
             for (auto& f_addr : failed_addrs) {
                 SYLAR_LOG_ERROR(g_logger) << "failed to bind address: " << *f_addr;
             }
             _exit(0); // 绑定失败，直接退出
         }
+        
+        if (conf.ssl) {
+            if (!server->loadCertificates(conf.cert_file, conf.key_file)) {
+                SYLAR_LOG_ERROR(g_logger) << "loadCertificates failure, cert_file" << conf.cert_file
+                        << ", key_file=" << conf.key_file;
+            }
+        }
+        
         if (!conf.name.empty()) {
             server->setName(conf.name);
         }

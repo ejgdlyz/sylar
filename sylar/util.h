@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <boost/lexical_cast.hpp>
 #include "sylar/util/hash_util.h"
 
 namespace sylar {
@@ -47,7 +48,32 @@ public:
 
 };
 
+template <class Map, class K, class V> 
+V GetParamValue(const Map& m, const K& k, const V& def = V()) {
+    auto it = m.find(k);
+    if (it == m.end()) {
+        return def;
+    }
+    try {
+        return boost::lexical_cast<V>(it->second);
+    } catch(...) {
+    }
+    return def;
 }
 
+template <class Map, class K, class V>
+bool CheckGetParamValue(const Map& m, const K& k, V& v) {
+    auto it = m.find(k);
+    if (it == m.end()) {
+        return false;
+    }
+    try {
+        v = boost::lexical_cast<V>(it->second);
+        return true;
+    } catch (...) {
+    }
+    return false;
+}
 
+}
 #endif

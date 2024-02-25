@@ -7,7 +7,7 @@ static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 
 // 连接池测试
 void test_connection_pool() {
-    sylar::http::HttpConnectionPool::ptr pool(new sylar::http::HttpConnectionPool("www.sylar.top", "", 80, 10, 1000 * 30, 5));
+    sylar::http::HttpConnectionPool::ptr pool(new sylar::http::HttpConnectionPool("www.sylar.top", "", false, 80, 10, 1000 * 30, 5));
 
     sylar::IOManager::GetThis()->addTimer(1000, [pool](){  // 每秒发一次
         auto r = pool->doGet("/", 300);
@@ -64,10 +64,28 @@ void run_test_http_connection_simple() {
     test_connection_pool();
 }
 
+// https 测试
+void test_https() {
+    auto res = sylar::http::HttpConnection::DoGet("https://www.baidu.com", 300);
+    SYLAR_LOG_INFO(g_logger) << "result = " << res->result
+            << " error=" << res->error
+            << " rsp=" << (res->response ? res->response->toString() : "");
+
+    auto pool = sylar::http::HttpConnectionPool::Create("https://www.baidu.com", "", 10, 1000 * 30, 5);
+    sylar::IOManager::GetThis()->addTimer(1000, [pool](){
+        auto res = pool->doGet("/", 300);
+        SYLAR_LOG_INFO(g_logger) << res->toString();
+    }, true);
+}
+
 int main(int argc, char const *argv[]) {
     // sylar::IOManager iom(2);
     sylar::IOManager iom;
+    
     // iom.schedule(run_test_http_connection);
-    iom.schedule(run_test_http_connection_simple);
+    
+    // iom.schedule(run_test_http_connection_simple);
+    
+    iom.schedule(test_https);
     return 0;
 }
