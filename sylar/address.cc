@@ -157,8 +157,7 @@ bool Address::GetInterfaceAddresses(std::multimap<std::string, std::pair<Address
         return false;
     }
     freeifaddrs(results);
-    return true;
-    
+    return !result.empty();
 }
 
 // 获取指定网卡的IPAddress
@@ -184,7 +183,7 @@ bool Address::GetInterfaceAddresses(std::vector<std::pair<Address::ptr, uint32_t
     for (; its.first != its.second; ++its.first) {
         result.push_back(its.first->second);
     }
-    return true;
+    return !result.empty();
 }
 
 

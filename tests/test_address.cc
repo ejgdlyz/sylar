@@ -6,18 +6,26 @@ sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 void test_address() {
     std::vector<sylar::Address::ptr> addrs;
     // bool v = sylar::Address::Lookup(addrs, "www.baidu.com");
-    bool v = sylar::Address::Lookup(addrs, "www.baidu.com:80");
+    // bool v = sylar::Address::Lookup(addrs, "www.baidu.com:80");
+    bool v = sylar::Address::Lookup(addrs, "localhost:3080");
     // bool v = sylar::Address::Lookup(addrs, "www.baidu.com:http");  // http -> 80
     // bool v = sylar::Address::Lookup(addrs, "www.baidu.com:ftp");  // ftp -> 21
 
 
     if (!v) {
-        SYLAR_LOG_ERROR(g_logger) << "lookup fail";
+        SYLAR_LOG_ERROR(g_logger) << "lookup failure";
         return;
     }
 
     for (size_t i = 0; i < addrs.size(); ++i) {
         SYLAR_LOG_INFO(g_logger) << i << " - " << addrs[i]->toString();
+    }
+
+    auto addr = sylar::Address::LookupAny("localhost:4080");
+    if (addr) {
+        SYLAR_LOG_INFO(g_logger) << *addr;
+    } else {
+        SYLAR_LOG_ERROR(g_logger) << "error";
     }
 }
 
@@ -66,6 +74,8 @@ int main() {
     // test();
     // test_iface();
     // test_ipv4();
-    test_networkaddress();
+    // test_networkaddress();
+
+    test_address();
     return 0;
 }

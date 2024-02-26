@@ -5,6 +5,7 @@
 #include "sylar/env.h"
 #include "sylar/log.h"
 #include "sylar/daemon.h"
+#include "sylar/worker.h"
 
 namespace sylar {
 
@@ -24,11 +25,14 @@ struct HttpServerConf {
     std::string name = "sylar/0.0";
     std::string cert_file;
     std::string key_file;
+    std::string accept_worker;
+    std::string process_worker;
     
     bool operator==(const HttpServerConf& rhs) const {
         return addrs == rhs.addrs && keepalive == rhs.keepalive 
                 && timeout == rhs.timeout && name == rhs.name && ssl == rhs.ssl
-                && cert_file == rhs.cert_file && key_file == rhs.key_file;
+                && cert_file == rhs.cert_file && key_file == rhs.key_file
+                && accept_worker == rhs.accept_worker && process_worker == rhs.process_worker;
     }
 
     bool isValid() const {
@@ -49,6 +53,8 @@ public:
         conf.ssl = node["ssl"].as<int>(conf.ssl);
         conf.cert_file = node["cert_file"].as<std::string>(conf.cert_file);
         conf.key_file = node["key_file"].as<std::string>(conf.key_file);
+        conf.accept_worker = node["accept_worker"].as<std::string>();
+        conf.process_worker = node["process_worker"].as<std::string>();
         if (node["address"].IsDefined()) {
             for (size_t i = 0; i < node["address"].size(); ++i) {
                 conf.addrs.push_back(node["address"][i].as<std::string>());
@@ -70,6 +76,8 @@ public:
         node["ssl"] = conf.ssl;
         node["cert_file"] = conf.cert_file;
         node["key_file"] = conf.key_file;
+        node["accept_worker"] = conf.accept_worker;
+        node["process_worker"] = conf.process_worker;
         for (auto& addr : conf.addrs) {
             node["address"].push_back(addr);
         }
@@ -162,13 +170,17 @@ int Application::main(int argc, char** argv) {
     }
     ofs << getpid();
 
-    sylar::IOManager iom(1);
-    iom.schedule(std::bind(&Application::run_fiber, this));
-    iom.stop();
+    m_mainIOManager.reset(new sylar::IOManager(1, true, "main"));
+    m_mainIOManager->schedule(std::bind(&Application::run_fiber, this));
+    m_mainIOManager->addTimer(2000, [](){
+        // SYLAR_LOG_INFO(g_logger) << "hello";
+    }, true);
+    m_mainIOManager->stop();
     return 0;
 }
 
 int Application::run_fiber() {
+    sylar::WorkerMgr::GetInstance()->init();
     // server 放在协程里初始化
     auto http_confs = g_http_servers_conf->getValue();
     for (auto& conf : http_confs) {
@@ -189,21 +201,46 @@ int Application::run_fiber() {
             } 
             // 地址解析不成功，解析网卡 
             std::vector<std::pair<Address::ptr, uint32_t>> results;
-            if (!sylar::Address::GetInterfaceAddresses(results, addr.substr(0, pos))) {
-                SYLAR_LOG_ERROR(g_logger) << "invalid address: " << addr;
+            if (sylar::Address::GetInterfaceAddresses(results, addr.substr(0, pos))) {
+                for (auto& res : results) {
+                    auto ip_addr = std::dynamic_pointer_cast<IPAddress>(res.first);
+                    if (ip_addr) {
+                        ip_addr->setPort(atoi(addr.substr(pos + 1).c_str()));
+                    }
+                    p_addrs.push_back(ip_addr);
+                }
                 continue;
             }
-            for (auto& res : results) {
-                auto ip_addr = std::dynamic_pointer_cast<IPAddress>(res.first);
-                if (ip_addr) {
-                    ip_addr->setPort(atoi(addr.substr(pos + 1).c_str()));
-                }
-                p_addrs.push_back(ip_addr);
+            auto aaddr = sylar::Address::LookupAny(addr);
+            if (aaddr) {
+                p_addrs.push_back(aaddr);
+                continue;
             }
+            SYLAR_LOG_ERROR(g_logger) << "invalid address: " << addr;
+            _exit(0);
         }
 
+        IOManager* accept_worker = sylar::IOManager::GetThis();
+        IOManager* process_worker = sylar::IOManager::GetThis();
+        if (!conf.accept_worker.empty()) {
+            accept_worker = sylar::WorkerMgr::GetInstance()->getAsIOManager(conf.accept_worker).get();
+            if (!accept_worker) {
+                SYLAR_LOG_ERROR(g_logger) << "accept_worker: " << conf.accept_worker
+                        << " not exists.";
+                _exit(0);
+            }
+        }
+        if (!conf.process_worker.empty()) {
+            process_worker = sylar::WorkerMgr::GetInstance()->getAsIOManager(conf.process_worker).get();
+            if (!process_worker) {
+                SYLAR_LOG_ERROR(g_logger) << "process_worker: " << conf.process_worker
+                        << " not exists.";
+                _exit(0);
+            }
+        }
         // 创建 httpserver
-        sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(conf.keepalive));
+        sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(conf.keepalive
+                , process_worker, accept_worker));
         std::vector<Address::ptr> failed_addrs;
         if (!server->bind(p_addrs, failed_addrs, conf.ssl)) {
             for (auto& f_addr : failed_addrs) {
