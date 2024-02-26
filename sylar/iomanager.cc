@@ -286,7 +286,7 @@ bool IOManager::stopping() {
 
 // @override, 线程空闲时，陷入 idle, 即 epoll_wait
 void IOManager::idle() {
-    // SYLAR_LOG_DEBUG(g_logger) << "idle";
+    SYLAR_LOG_DEBUG(g_logger) << "idle";
     const uint64_t MAX_EVNETS = 256;
     epoll_event* events = new epoll_event[MAX_EVNETS]();  // 保存发生事件的 fd 结构体集合
     std::shared_ptr<epoll_event> shared_events(events, [](epoll_event* ptr){ delete[] ptr;});

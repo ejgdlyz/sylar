@@ -8,7 +8,7 @@ namespace sylar {
 static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 
 static thread_local Scheduler* t_scheduler = nullptr;       // 线程中获取调度器指针
-static thread_local Fiber* t_scheduler_fiber = nullptr;               // 此协程的主协程函数 root_fiber
+static thread_local Fiber* t_scheduler_fiber = nullptr;     // 此协程的主协程函数 root_fiber
 
 Scheduler::Scheduler(size_t thread_size, bool use_caller, const std::string& name) 
         :m_name(name) {
@@ -160,9 +160,9 @@ void Scheduler::setThis() {
 // 真正执行协程调度的方法
 // 将当前线程的 Scheduler 放进来
 void Scheduler::run() {
-    setThis();
+    SYLAR_LOG_INFO(g_logger) << m_name << " run";
     set_hook_enable(true);  // hook
-    
+    setThis();
     if (sylar::GetThreadId() != m_rootThread) {  // 即 run() 所在 id
         t_scheduler_fiber = Fiber::GetThis().get();
     } 

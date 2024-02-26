@@ -31,9 +31,9 @@ private:
     FiberSemaphore m_fiberSem;
 };
 
-class WorkManager {
+class WorkerManager {
 public:
-    WorkManager();
+    WorkerManager();
     void add(Scheduler::ptr s);
     Scheduler::ptr get(const std::string& name);
     IOManager::ptr getAsIOManager(const std::string& name);
@@ -72,7 +72,7 @@ private:
     bool m_stop;
 };
 
-typedef sylar::Singleton<WorkManager> WorkerMgr;
+typedef sylar::Singleton<WorkerManager> WorkerMgr;
 
 }
 #endif

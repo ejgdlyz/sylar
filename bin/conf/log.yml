@@ -6,7 +6,7 @@ logs:
             file: /home/lambda/logs/sylar/root.txt
           - type: StdoutLogAppender
     - name: system
-      level: info
+      level: debug
       appenders: 
           - type: FileLogAppender
             file: /home/lambda/logs/sylar/system.txt

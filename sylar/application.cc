@@ -190,11 +190,13 @@ int Application::run_fiber() {
         for(auto& addr : conf.addrs) {
             size_t pos = addr.find(":");
             if (pos == std::string::npos) {
-                SYLAR_LOG_ERROR(g_logger) << "invalid address: " << addr;
+                // SYLAR_LOG_ERROR(g_logger) << "invalid address: " << addr;
+                p_addrs.push_back(UnixAddress::ptr(new UnixAddress(addr)));
                 continue;
             }
-            // 解析地址
-            auto p_addr = sylar::Address::LookupAny(addr);
+            int32_t port = atoi(addr.substr(pos + 1).c_str());
+            // 解析地址, 127.0.0.1
+            auto p_addr = sylar::IPAddress::Create(addr.substr(0, pos).c_str(), port);
             if (p_addr) {
                 p_addrs.push_back(p_addr);
                 continue;

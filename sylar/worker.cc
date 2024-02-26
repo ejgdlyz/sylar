@@ -36,15 +36,15 @@ void WorkerGroup::waitAll() {
     }
 }
 
-WorkManager::WorkManager()
+WorkerManager::WorkerManager()
     : m_stop(false) {
 }
 
-void WorkManager::add(Scheduler::ptr s) {
+void WorkerManager::add(Scheduler::ptr s) {
     m_data[s->getName()].push_back(s);
 }
 
-Scheduler::ptr WorkManager::get(const std::string& name) {
+Scheduler::ptr WorkerManager::get(const std::string& name) {
     auto it = m_data.find(name);
     if (it == m_data.end()) {
         return nullptr;
@@ -55,12 +55,12 @@ Scheduler::ptr WorkManager::get(const std::string& name) {
     return it->second[rand() % it->second.size()];
 }
 
-IOManager::ptr WorkManager::getAsIOManager(const std::string& name) {
+IOManager::ptr WorkerManager::getAsIOManager(const std::string& name) {
     return std::dynamic_pointer_cast<IOManager>(get(name));
 }
 
 
-bool WorkManager::init() {
+bool WorkerManager::init() {
     auto workers = g_worker_config->getValue();
     for (auto& worker: workers) {
         std::string name = worker.first;
@@ -81,7 +81,7 @@ bool WorkManager::init() {
     return true;
 }
 
-void WorkManager::stop() {
+void WorkerManager::stop() {
     if (m_stop) {
         return;
     }
@@ -95,11 +95,11 @@ void WorkManager::stop() {
     m_stop = true;
 }
 
-uint32_t WorkManager::getCount() {
+uint32_t WorkerManager::getCount() {
     return m_data.size();
 }
 
-std::ostream& WorkManager::dump(std::ostream& os) {
+std::ostream& WorkerManager::dump(std::ostream& os) {
     for (auto& data: m_data) {
         for (auto& scheduler : data.second) {
             scheduler->dump(os) << std::endl;
