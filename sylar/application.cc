@@ -1,10 +1,11 @@
 #include <functional>
 #include <iostream>
 #include "application.h"
+#include "sylar/daemon.h"
 #include "sylar/config.h"
 #include "sylar/env.h"
 #include "sylar/log.h"
-#include "sylar/daemon.h"
+#include "sylar/module.h"
 #include "sylar/worker.h"
 
 namespace sylar {
@@ -106,15 +107,36 @@ bool Application::init(int argc, char **argv) {
     sylar::EnvMgr::GetInstance()->addHelper("c", "default conf path: ./conf");
     sylar::EnvMgr::GetInstance()->addHelper("p", "print help");
 
+    bool is_print_help = false;
     if (!sylar::EnvMgr::GetInstance()->init(argc, argv)) {
-        sylar::EnvMgr::GetInstance()->printHelper();
-        return false;
+        is_print_help = true;
     }
 
     if (sylar::EnvMgr::GetInstance()->has("p")) {
+        is_print_help = true;
+    }
+
+    std::string conf_path = sylar::EnvMgr::GetInstance()->getConfigPath();  // 获取配置路径，以当前可执行文件为相对路径，默认取 conf
+    SYLAR_LOG_INFO(g_logger) << "load conf path: " << conf_path;
+    sylar::Config::loadFromConfDir(conf_path);                              // 加载配置
+
+    ModuleMgr::GetInstance()->init();
+    std::vector<Module::ptr> modules;
+    ModuleMgr::GetInstance()->listAll(modules);
+    
+    for (auto& module : modules) {
+        module->onBeforeArgsParse(argc, argv);
+    }
+
+    if (is_print_help) {
         sylar::EnvMgr::GetInstance()->printHelper();
         return false;
     }
+    
+    for (auto& module : modules) {
+        module->onAfterArgsParse(argc, argv);
+    }
+    modules.clear();
 
     int run_type = 0;
     if (sylar::EnvMgr::GetInstance()->has("s")) {  // 命令行方式启动
@@ -135,12 +157,6 @@ bool Application::init(int argc, char **argv) {
         SYLAR_LOG_ERROR(g_logger) << "server is running: " << pidfile;
         return false;
     }
-
-    std::string conf_path = sylar::EnvMgr::GetInstance()->getAbsolutePath(
-            sylar::EnvMgr::GetInstance()->get("c", "conf"));    // 获取配置路径，以当前可执行文件为相对路径，默认取 conf
-    
-    SYLAR_LOG_INFO(g_logger) << "load conf path: " << conf_path;
-    sylar::Config::loadFromConfDir(conf_path);  // 加载配置
 
     // 创建进程的 工作路径，可以存放系统的信息
     if (!sylar::FSUtil::Mkdir(g_server_work_path->getValue())) {
@@ -172,6 +188,7 @@ int Application::main(int argc, char** argv) {
 
     m_mainIOManager.reset(new sylar::IOManager(1, true, "main"));
     m_mainIOManager->schedule(std::bind(&Application::run_fiber, this));
+    m_mainIOManager->addTimer(1000, [](){}, true);
     m_mainIOManager->addTimer(2000, [](){
         // SYLAR_LOG_INFO(g_logger) << "hello";
     }, true);
@@ -184,7 +201,7 @@ int Application::run_fiber() {
     // server 放在协程里初始化
     auto http_confs = g_http_servers_conf->getValue();
     for (auto& conf : http_confs) {
-        SYLAR_LOG_INFO(g_logger) << LexicalCast<HttpServerConf, std::string>()(conf);  // HttpServerConf -> string
+        SYLAR_LOG_INFO(g_logger) << std::endl << LexicalCast<HttpServerConf, std::string>()(conf);  // HttpServerConf -> string
         
         std::vector<Address::ptr> p_addrs;
         for(auto& addr : conf.addrs) {

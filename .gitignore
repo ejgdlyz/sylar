@@ -31,7 +31,11 @@ depcomp
 
 build/
 bin/test*
+bin/echo*
+bin/sylar
+bin/my*
 bin/*.txt
+lib/*
 
 tests/my_test.cpp
 tests/my_test

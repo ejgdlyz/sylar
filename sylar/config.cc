@@ -70,7 +70,7 @@ void Config::loadFromYaml(const YAML::Node& root) {
 static std::map<std::string, uint64_t> s_file2modifytime;
 static sylar::Mutex s_mutex;
 
-void Config::loadFromConfDir(const std::string& path) {
+void Config::loadFromConfDir(const std::string& path, bool force) {
     // 获取 path 绝对路径
     std::string absolute_path = sylar::EnvMgr::GetInstance()->getAbsolutePath(path);
     std::vector<std::string> files;
@@ -80,7 +80,7 @@ void Config::loadFromConfDir(const std::string& path) {
         struct stat st;
         if (lstat(file.c_str(), &st) == 0) {
             sylar::Mutex::Lock lock(s_mutex);
-            if (s_file2modifytime[file] == (uint64_t)st.st_mtime) {
+            if (!force && s_file2modifytime[file] == (uint64_t)st.st_mtime) {
                 continue;
             } else {
                 s_file2modifytime[file] = (uint64_t)st.st_mtime;

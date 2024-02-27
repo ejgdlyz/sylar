@@ -1,0 +1,5 @@
+workers:
+    io:                     # 线程池名称
+        thread_num: 4       # 线程数量
+    accept:
+        thread_num: 1

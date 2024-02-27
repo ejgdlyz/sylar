@@ -381,7 +381,7 @@ public:
     static void loadFromYaml(const YAML::Node& root);
     
     // 获取目录 path 下所有的配置文件
-    static void loadFromConfDir(const std::string& path);
+    static void loadFromConfDir(const std::string& path, bool force = false);
 
 
     static ConfigVarBase::ptr LookupBase(const std::string& name);

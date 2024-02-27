@@ -30,6 +30,7 @@ public:
     std::string getEnv(const std::string& key, const std::string& default_val = "") const;
 
     std::string getAbsolutePath(const std::string& path) const;
+    std::string getConfigPath();
 private:
     RWMutexType m_mutex;
     std::map<std::string, std::string> m_args;                  // 参数名: 参数值
