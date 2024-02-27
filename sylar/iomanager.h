@@ -1,10 +1,8 @@
 #ifndef __SYLAR_IOMANAGER_H__
 #define __SYLAR_IOMANAGER_H__
 
-#include "sylar.h"
 #include "scheduler.h"
 #include "timer.h"
-#include "noncopyable.h"
 
 namespace sylar {
 

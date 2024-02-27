@@ -24,6 +24,10 @@ TcpServer::~TcpServer() {
     m_socks.clear();
 }
 
+void TcpServer::setConf(const TcpServerConf& v) {
+    m_conf.reset(new TcpServerConf(v));
+}
+
 bool TcpServer::bind(sylar::Address::ptr addr, bool ssl) {
     std::vector<Address::ptr> addrs;
     std::vector<Address::ptr> falied_addrs;

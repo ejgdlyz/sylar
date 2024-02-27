@@ -24,7 +24,6 @@ endif()
 
 set(LIB_SRC
     sylar/address.cc
-    sylar/application.cc
     sylar/bytearray.cc
     sylar/config.cc
     sylar/daemon.cc
@@ -55,8 +54,10 @@ set(LIB_SRC
     sylar/thread.cc
     sylar/timer.cc
     sylar/util.cc
+    sylar/util/json_util.cc
     sylar/util/hash_util.cc
     sylar/worker.cc
+    sylar/application.cc
     )
 
 ragelmaker(sylar/http/http11_parser.rl LIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/sylar/http)
@@ -75,6 +76,7 @@ set(LIBS
         dl
         pthread
         yaml-cpp
+        jsoncpp
         ${OPENSSL_LIBRARIES}
         )
 

@@ -9,6 +9,7 @@
 #include "socket.h"
 #include "address.h"
 #include "noncopyable.h"
+#include "config.h"
 
 namespace sylar {
 
@@ -49,6 +50,7 @@ struct TcpServerConf {
     }
 };
 
+// 偏特化 ： 配置系统与自定义类型的转换
 template<>
 class LexicalCast<std::string, TcpServerConf> {
 public:
@@ -76,6 +78,7 @@ public:
     }
 };
 
+// YAML node -> string 
 template<>
 class LexicalCast<TcpServerConf, std::string> {
 public:
@@ -105,8 +108,8 @@ public:
 class TcpServer : public std::enable_shared_from_this<TcpServer>, NonCopyable {
 public:
     typedef std::shared_ptr<TcpServer> ptr;
-    TcpServer(sylar::IOManager* work = sylar::IOManager::GetThis(), 
-        sylar::IOManager* accept_work = sylar::IOManager::GetThis());
+    TcpServer(sylar::IOManager* work = sylar::IOManager::GetThis()
+            , sylar::IOManager* accept_work = sylar::IOManager::GetThis());
     virtual ~TcpServer();
 
     virtual bool bind(sylar::Address::ptr addr, bool ssl = false);                // 监听地址
@@ -123,6 +126,9 @@ public:
     virtual void setName(const std::string& v) { m_name = v;}  
     bool isStop() const { return m_isStop;}
 
+    TcpServerConf::ptr getConf() const { return m_conf;}
+    void setConf(TcpServerConf::ptr v) { m_conf = v;}
+    void setConf(const TcpServerConf& v);
 protected:
     virtual void handleClient(Socket::ptr client);  // 每 accpet 一次，执行一次这个回调函数
     virtual void startAccept(Socket::ptr sock);
@@ -137,7 +143,7 @@ protected:
 
     bool m_ssl = false;
 
-    TcpServerConf::ptr m_conf;
+    TcpServerConf::ptr m_conf;              // 服务器配置
 };
 
 

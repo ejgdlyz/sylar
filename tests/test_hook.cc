@@ -7,7 +7,7 @@
 #include "sylar/hook.h"
 #include "sylar/iomanager.h"
 #include "sylar/log.h"
-#include "sylar/iomanager.h"
+#include "sylar/macro.h"
 
 sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 

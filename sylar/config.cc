@@ -106,6 +106,4 @@ void Config::Visit(std::function<void(ConfigVarBase::ptr)> cb) {  // 将 s_data 
     } 
 }
 
-
-
 }
