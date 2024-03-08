@@ -55,11 +55,11 @@ class IPAddress : public Address {
 public:
     typedef std::shared_ptr<IPAddress> ptr;
 
-    static IPAddress::ptr Create(const char* address, uint16_t port = 0); // IPv4/IPv6 域名转 IP地址
+    static IPAddress::ptr Create(const char* address, uint16_t port = 0);   // IPv4/IPv6 域名转 IP地址
 
-    virtual IPAddress::ptr broadcastAddress(uint32_t prefix_len) = 0;   // 通过 IP 得到广播地址
-    virtual IPAddress::ptr networkAddress(uint32_t prefix_len) = 0;     // 网络地址
-    virtual IPAddress::ptr subnetMask(uint32_t prefix_len) = 0;         // 子网掩码
+    virtual IPAddress::ptr broadcastAddress(uint32_t prefix_len) = 0;       // 通过 IP 得到广播地址
+    virtual IPAddress::ptr networkAddress(uint32_t prefix_len) = 0;         // 网络地址
+    virtual IPAddress::ptr subnetMask(uint32_t prefix_len) = 0;             // 子网掩码
 
     virtual uint16_t getPort() const = 0;
     virtual void setPort(uint16_t port) = 0;
@@ -69,7 +69,7 @@ class IPv4Address : public IPAddress {
 public:
     typedef std::shared_ptr<IPv4Address> ptr;
 
-    static IPv4Address::ptr Create(const char* address, uint16_t port = 0);             // str -> sockaddr_in
+    static IPv4Address::ptr Create(const char* address, uint16_t port = 0); // str -> sockaddr_in
 
     IPv4Address(const sockaddr_in& address);
     IPv4Address(uint32_t address = INADDR_ANY, uint16_t port = 0);

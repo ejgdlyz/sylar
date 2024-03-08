@@ -21,7 +21,6 @@ configure
 config.h.in~
 install-sh
 libtool
-Makefile
 Makefile.in
 missing
 stamp-h1

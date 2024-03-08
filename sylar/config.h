@@ -46,7 +46,7 @@ template<class F, class T>
 class LexicalCast {
 public: 
     T operator() (const F& v) {
-        return boost::lexical_cast<T>(v);  // 适合基础类型
+        return boost::lexical_cast<T>(v);  // 适合基本数据类型
     }
 };
 
@@ -60,8 +60,8 @@ public:
         std::stringstream ss;
         for (size_t i = 0; i < node.size(); ++i) {  // 为数组则解析，否则抛异常并捕获
             ss.str("");
-            ss << node[i];
-            vec.push_back(LexicalCast<std::string, T>()(ss.str()));
+            ss << node[i];      // YAML node -> string
+            vec.push_back(LexicalCast<std::string, T>()(ss.str()));  // 每个元素: string -> T, T 为基本数据类型
         }
         return vec;
     }
@@ -216,7 +216,7 @@ public:
         for (auto it = node.begin(); it != node.end(); ++it) {  
             ss.str("");
             ss << it->second;
-            vec.insert(std::make_pair(it->first.Scalar(), LexicalCast<std::string, T>()(ss.str())));
+            vec.insert(std::make_pair(it->first.Scalar(), LexicalCast<std::string, T>()(ss.str())));  
         }
         return vec;
     }
@@ -244,7 +244,7 @@ class ConfigVar : public ConfigVarBase {
 public:
     typedef RWMutex RWMutexType;
     typedef std::shared_ptr<ConfigVar> ptr; 
-    typedef std::function<void(const T& old_value, const T& new_value)> on_change_cb;  // 回调函数
+    typedef std::function<void(const T& old_value, const T& new_value)> on_change_cb;  // 配置变更回调函数
 
     ConfigVar(const std::string& name, const T& default_value, const std::string& description = "") 
         :ConfigVarBase(name, description)
@@ -258,7 +258,8 @@ public:
             // return boost::lexical_cast<std::string>(m_val);    // member-type is converted to string
             return ToStr()(m_val);
         } catch (std::exception& e) {
-            SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "ConfigVar::toString exception: " 
+            static sylar::Logger::ptr s_logger = SYLAR_LOG_NAME("system");
+            SYLAR_LOG_ERROR(s_logger) << "ConfigVar::toString exception: " 
                 << e.what() << ", failed to convert: " << typeid(m_val).name() << " to string"
                 << ", name=" << m_name;
         }
@@ -271,7 +272,8 @@ public:
             setValue(FromStr()(val));
             return true;
         } catch (std::exception& e) {
-            SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "ConfigVar::fromString exception: " 
+            static sylar::Logger::ptr s_logger = SYLAR_LOG_NAME("system");
+            SYLAR_LOG_ERROR(s_logger) << "ConfigVar::fromString exception: " 
                     << e.what() << ", failed to convert: string to " << typeid(m_val).name()
                     << " name=" << m_name
                     << " - " << val;
@@ -291,7 +293,7 @@ public:
                 return;
             
             for (auto& cb_pair: m_cbs) {
-                cb_pair.second(m_val, v);  // operator()(m_val, v) 回调函数调用
+                cb_pair.second(m_val, v);  // operator()(old_val, new_value) 即调用配置变更回调函数
             }
         }
         RWMutexType::WriteLock lock(m_mutex);
@@ -345,10 +347,12 @@ public:
         if (it != GetData().end()) {
             auto tmp = std::dynamic_pointer_cast<ConfigVar<T>> (it->second);
             if (tmp) {
-                SYLAR_LOG_INFO(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists.";
+                static sylar::Logger::ptr s_logger = SYLAR_LOG_NAME("system");
+                SYLAR_LOG_INFO(s_logger) << "Lookup name = " << name << " exists.";
                 return tmp;
             } else {
-                SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "Lookup name = " << name << " exists, but type is not "
+                static sylar::Logger::ptr s_logger = SYLAR_LOG_NAME("system");
+                SYLAR_LOG_ERROR(s_logger) << "Lookup name = " << name << " exists, but type is not "
                         << typeid(T).name() << ". Real type = " << it->second->getTypeName()
                         << " " << it->second->toString();
                 return nullptr;
@@ -357,7 +361,8 @@ public:
         
         if (name.find_first_not_of("abcdefghigklmnopqrstuvwxyz.012345678_")
                 != std::string::npos) {
-            SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "Lookuped name invalid: " << name;
+            static sylar::Logger::ptr s_logger = SYLAR_LOG_NAME("system");
+            SYLAR_LOG_ERROR(s_logger) << "Lookuped name invalid: " << name;
 
             throw std::invalid_argument(name);
         }

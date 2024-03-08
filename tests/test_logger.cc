@@ -49,9 +49,16 @@ void test_logger2() {
     SYLAR_LOG_INFO(logger) << "xxx";
 }
 
+void test_hello_logger() {
+    static sylar::Logger::ptr s_logger = SYLAR_LOG_ROOT();
+    SYLAR_LOG_INFO(s_logger) << "hello sylar log!";
+    SYLAR_LOG_FMT_DEBUG(s_logger, "%s", "hello sylar log!"); 
+}
+
 int main(int argc, char** argv) {
 
     // test_logger();    
     test_logger2();
+    // test_hello_logger();
     return 0;
 }

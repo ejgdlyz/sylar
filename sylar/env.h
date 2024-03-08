@@ -33,8 +33,8 @@ public:
     std::string getConfigPath();
 private:
     RWMutexType m_mutex;
-    std::map<std::string, std::string> m_args;                  // 参数名: 参数值
-    std::vector<std::pair<std::string, std::string>> m_helpers;  // 保存参数描述
+    std::map<std::string, std::string> m_args;                      // 参数名: 参数值
+    std::vector<std::pair<std::string, std::string>> m_helpers;     // 保存参数描述
     
     std::string m_program;
     std::string m_exe;          // 可执行程序的绝对路径, 即进程的 exe 指向的路径

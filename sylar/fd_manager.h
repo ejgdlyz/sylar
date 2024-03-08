@@ -9,7 +9,7 @@
 
 namespace sylar {
 
-// fd 相关
+// 文件句柄上下文
 class FdCtx : public std::enable_shared_from_this<FdCtx> {
 public:
     typedef std::shared_ptr<FdCtx> ptr;
@@ -35,12 +35,12 @@ public:
 
 
 private:
-    bool m_isInit: 1;      // 是否初始化
-    bool m_isSocket: 1;    // 是否是 socket fd
-    bool m_sysNonblock: 1;  // 系统非阻塞
-    bool m_userNonblock: 1;  // 用户非阻塞
-    bool m_isClosed: 1;     // 是否关闭
-    int m_fd;
+    bool m_isInit: 1;           // 是否初始化
+    bool m_isSocket: 1;         // 是否是 socket fd
+    bool m_sysNonblock: 1;      // 是否系统非阻塞(hook)
+    bool m_userNonblock: 1;     // 是否用户非阻塞
+    bool m_isClosed: 1;         // 是否关闭
+    int m_fd;                   // 文件句柄
     uint64_t m_recvTimeout;     // 接收超时时间
     uint64_t m_sendTimeout;     // 发送超时时间
 
@@ -56,8 +56,8 @@ public:
     void del(int fd);
 
 private:
-    RWMuteType m_mutex;
-    std::vector<FdCtx::ptr> m_data;
+    RWMuteType m_mutex;                 // 读写锁
+    std::vector<FdCtx::ptr> m_data;     // 文件句柄集合
 };
 
 typedef Singleton<FdManager> FdMgr;

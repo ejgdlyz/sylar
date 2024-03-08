@@ -18,7 +18,7 @@ public:
         INIT, 
         HOLD,
         EXEC,
-        TREM,
+        TERM,
         READY, 
         EXCEPT
     };
@@ -63,13 +63,13 @@ public:
 
 private:
     uint64_t m_id = 0;                  // 协程 id
-    uint32_t m_statckSize = 0;          // 栈大小
+    uint32_t m_statckSize = 0;          // 协程栈大小
     State m_state = INIT;               // 协程状态
 
-    ucontext_t m_ctx;                   // 
-    void* m_stack = nullptr;            // 栈内存空间
+    ucontext_t m_ctx;                   // 协程上下文
+    void* m_stack = nullptr;            // 协程栈地址
 
-    std::function<void()> m_cb;         // 协程执行函数
+    std::function<void()> m_cb;         // 协程入口函数
 };
 }
 

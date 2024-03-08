@@ -54,8 +54,8 @@ public:
     // length:int 64, data 
     void writeStringF64(const std::string& value);  
     // length:varint, data 
-    void writeStringVint(const std::string& value);  // 压缩长度表示
-    void writeStringWithoutLength(const std::string& value);  // 压缩长度表示
+    void writeStringVint(const std::string& value);             // 压缩长度表示
+    void writeStringWithoutLength(const std::string& value);    // 压缩长度表示
 
 
     // read  

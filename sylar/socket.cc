@@ -115,23 +115,23 @@ bool Socket::setOption(int level, int option, const void* result, size_t len) {
 
 Socket::ptr Socket::accept() {
     Socket::ptr sock(new Socket(m_family, m_type, m_protocol));     // create client socket
-    int newsock = ::accept(m_sock, nullptr, nullptr);               // return a new socket fd
-    if (newsock == -1) {
+    int connfd = ::accept(m_sock, nullptr, nullptr);               // return a new socket fd
+    if (connfd == -1) {
         SYLAR_LOG_ERROR(g_logger) << "accept(" << m_sock << ") errno"
                 << errno << " errstr=" << strerror(errno);
         return nullptr;
     }
-    if (sock->init(newsock)) {              // sock 绑定 newsock fd
+    if (sock->init(connfd)) {  // 新建的 sock 对象绑定 connfd
         return sock;
     } 
     return nullptr;
 }
 
 // 对句柄进行初始化：状态、地址等
-bool Socket::init(int sock) {
-    FdCtx::ptr ctx = FdMgr::GetInstance()->get(sock);
+bool Socket::init(int connfd) {
+    FdCtx::ptr ctx = FdMgr::GetInstance()->get(connfd);
     if (ctx && ctx->isSocket() && !ctx->isClose()) {
-        m_sock = sock;
+        m_sock = connfd;
         m_connected = true;
         initSock();
         getLocalAddress();

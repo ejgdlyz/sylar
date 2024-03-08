@@ -255,15 +255,15 @@ int main(int argc, char *argv[])
 
     // test_class();
 
-    // test_logger_config();
+    test_logger_config();
 
     // test_config_Visit();
 
-    sylar::EnvMgr::GetInstance()->init(argc, argv);
-    test_loadconf();
-    std::cout << " ===== " << std::endl;
-    sleep(10);
-    test_loadconf();
+    // sylar::EnvMgr::GetInstance()->init(argc, argv);
+    // test_loadconf();
+    // std::cout << " ===== " << std::endl;
+    // sleep(10);
+    // test_loadconf();
 
     return 0;
 }

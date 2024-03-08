@@ -96,6 +96,7 @@ void IOManager::contextResize(size_t size) {
 }
 
 int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
+    // 获取 fd 对应的 FdContext, 不存在则分配
     FdContext* fd_context = nullptr;
     RWMutexType::ReadLock rd_lock(m_mutex);
     if ((int)m_fdContexts.size() > fd) {
@@ -130,7 +131,9 @@ int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
         return -1;  // -1 fail
     }
 
-    ++m_pendingEventCount;  
+    ++m_pendingEventCount;  // 待执行的 IO 事件数 + 1
+
+    // 获取 fd 的 event 事件对应的 EventContext, 对其属性 scheduler, cb, fiber 进行赋值
     fd_context->events = (Event)(fd_context->events | event);
     FdContext::EventContext& event_ctx = fd_context->getContext(event);
     SYLAR_ASSERT(!event_ctx.scheduler && !event_ctx.fiber
@@ -140,7 +143,7 @@ int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
     if (cb) {
         event_ctx.cb.swap(cb);
     } else {
-        event_ctx.fiber = Fiber::GetThis();
+        event_ctx.fiber = Fiber::GetThis();  // 回调函数为空，则将当前协程作为回调执行体
         SYLAR_ASSERT(event_ctx.fiber->getState() == Fiber::EXEC);
     }
     
@@ -148,6 +151,7 @@ int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
 }
 
 bool IOManager::delEvent(int fd, Event event) {
+    // 获取 fd 对应的 FdContext
     RWMutexType::ReadLock rd_lock(m_mutex);
     if ((int)m_fdContexts.size() <= fd) {
         return false;

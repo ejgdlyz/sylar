@@ -136,13 +136,14 @@ public:
     virtual int recvFrom(void* buffer, size_t length, Address::ptr from, int flags = 0) override;
     virtual int recvFrom(iovec* buffers, size_t length, Address::ptr from, int flags = 0) override;
 
+    // 加载证书与私钥文件
     bool loadCertificates(const std::string& cert_file, const std::string& key_file);
     virtual std::ostream& dump(std::ostream& os) const override;
 protected:
     virtual bool init(int sock) override;
 private:
-    std::shared_ptr<SSL_CTX> m_ctx;
-    std::shared_ptr<SSL> m_ssl;
+    std::shared_ptr<SSL_CTX> m_ctx;         // SSL 配置对象
+    std::shared_ptr<SSL> m_ssl;             // SSL/TLS 会话链接
 };
 
 std::ostream& operator<< (std::ostream& os, const Socket& sock);

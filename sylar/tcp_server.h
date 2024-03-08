@@ -3,11 +3,10 @@
 
 #include <memory>
 #include <functional>
-#include <vector>
 #include <string>
+#include "address.h"
 #include "iomanager.h"
 #include "socket.h"
-#include "address.h"
 #include "noncopyable.h"
 #include "config.h"
 
@@ -133,7 +132,7 @@ protected:
     virtual void handleClient(Socket::ptr client);  // 每 accpet 一次，执行一次这个回调函数
     virtual void startAccept(Socket::ptr sock);
 protected:
-    std::vector<Socket::ptr> m_socks;       //监听 socket 数组
+    std::vector<Socket::ptr> m_socks;       // 监听 socket 数组
     IOManager* m_worker;                    // 工作线程池，执行 hanleClient()
     IOManager* m_acceptWork;                // accept() 线程池 
     uint64_t m_recvTimeout;                 // 接收超时时间 ms

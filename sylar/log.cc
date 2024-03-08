@@ -598,6 +598,7 @@ struct LogAppenderDefine {
     }
 };
 
+// logger 配置自定义类型
 struct LogDefine {
     std::string name;
     LogLevel::Level level = LogLevel::UNKNOWN;

@@ -242,8 +242,6 @@ bool Address::operator!=(const Address& rhs) const {
 }
 
 IPAddress::ptr IPAddress::Create(const char* address, uint16_t port) {
-    
-
     addrinfo hints, *results;
     memset(&hints, 0, sizeof(hints));
 

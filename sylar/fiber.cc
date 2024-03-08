@@ -12,8 +12,8 @@ static Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 static std::atomic<uint64_t> s_fiber_id {0};
 static std::atomic<uint64_t> s_fiber_count {0};
 
-static thread_local Fiber* t_fiber = nullptr;       // 当前协程
-static thread_local Fiber::ptr t_threadFiber = nullptr;  // main 协程
+static thread_local Fiber* t_fiber = nullptr;               // 当前执行的协程
+static thread_local Fiber::ptr t_threadFiber = nullptr;     // caller 线程中的主协程
 
 static ConfigVar<uint32_t>::ptr g_fiber_stack_size =
         Config::Lookup("fiber.stack_size", (uint32_t)1024 * 1024, "Fiber stack size");      // 协程栈大小， 默认 1M
@@ -60,7 +60,7 @@ Fiber::Fiber(std::function<void()> cb, size_t stack_size, bool use_caller)
     m_ctx.uc_stack.ss_size = m_statckSize;  // 当前协程的栈空间大小
 
     if (!use_caller) {
-        makecontext(&m_ctx, &Fiber::MainFunc, 0);   // 入口函数与协程上下文环境绑定
+        makecontext(&m_ctx, &Fiber::MainFunc, 0);   // 入口函数与当前协程对象的上下文环境 m_ctx 绑定
     }
     else {
         makecontext(&m_ctx, &Fiber::CallerMainFunc, 0);   // 有 caller 版本
@@ -72,7 +72,7 @@ Fiber::Fiber(std::function<void()> cb, size_t stack_size, bool use_caller)
 Fiber::~Fiber() {
     --s_fiber_count;
     if (m_stack) {
-        SYLAR_ASSERT(m_state == TREM || m_state == EXCEPT || m_state == INIT );
+        SYLAR_ASSERT(m_state == TERM || m_state == EXCEPT || m_state == INIT );
         
         // 回收栈
         StackAlloc::Dealloc(m_stack, m_statckSize);
@@ -92,7 +92,7 @@ Fiber::~Fiber() {
 
 void Fiber::reset(std::function<void()> cb) {
     SYLAR_ASSERT(m_stack);
-    SYLAR_ASSERT(m_state == TREM || m_state == EXCEPT || m_state == INIT);
+    SYLAR_ASSERT(m_state == TERM || m_state == EXCEPT || m_state == INIT);
 
     m_cb = cb;
     if (getcontext(&m_ctx)) {
@@ -113,7 +113,7 @@ void Fiber::swapIn() {
     SYLAR_ASSERT(m_state != EXEC);
     m_state = EXEC;
 
-    if (swapcontext(&Scheduler::GetMainFiber()->m_ctx, &m_ctx)) {       // 切换到 m_ctx 执行
+    if (swapcontext(&Scheduler::GetMainFiber()->m_ctx, &m_ctx)) {       // 调度协程切换到当前协程对象的 m_ctx 执行
         SYLAR_ASSERT2(false, "Fiber::swapIn: swapcontext");
     }
 }
@@ -121,7 +121,7 @@ void Fiber::swapIn() {
 // 当前协程 Yield 到后台，唤醒 main 协程
 void Fiber::swapOut() {
     SetThis(Scheduler::GetMainFiber());
-    if (swapcontext(&m_ctx, &Scheduler::GetMainFiber()->m_ctx)) {       // 
+    if (swapcontext(&m_ctx, &Scheduler::GetMainFiber()->m_ctx)) {       // 当前协程对象切回调度协程 m_ctx 执行
         SYLAR_ASSERT2(false, "Fiber::swapOut: swapcontext");
     }
 }
@@ -140,7 +140,7 @@ void Fiber::back() {
     // 不加判断的 swapOut()
     SetThis(t_threadFiber.get());
     
-    if (swapcontext(&m_ctx, &t_threadFiber->m_ctx)) {       // 与真正的主协程 t_threadFiber->m_ctx 切换, 即 main fiber
+    if (swapcontext(&m_ctx, &t_threadFiber->m_ctx)) {       // 与caller线程的调度协程切换
         SYLAR_ASSERT2(false, "Fiber::swapOut: swapcontext");
     }
 }
@@ -150,7 +150,7 @@ void Fiber::SetThis(Fiber* fiber) {
     t_fiber = fiber;
 }
 
-// 获得当前执行协程的引用
+// 获得当前执行协程的引用 或者 新建一个主协程
 Fiber::ptr Fiber::GetThis() {
     if (t_fiber) {
         return t_fiber->shared_from_this();  // 当前协程
@@ -184,13 +184,14 @@ uint64_t Fiber::TotalFibers() {
     return s_fiber_count;
 }
 
+// 协程入口函数封装，以在协程结束时自动 yield 回主协程。
 void Fiber::MainFunc() {
     Fiber::ptr cur = GetThis();                         // 当前子协程引用计数 + 1
     SYLAR_ASSERT(cur);
     try {
         cur->m_cb();
         cur->m_cb = nullptr;
-        cur->m_state = TREM;
+        cur->m_state = TERM;
     }  catch (std::exception& e) {
         cur->m_state = EXCEPT;
         SYLAR_LOG_ERROR(g_logger) << "Fiber Except: " << e.what()
@@ -223,7 +224,7 @@ void Fiber::CallerMainFunc() {
     try {
         cur->m_cb();
         cur->m_cb = nullptr;
-        cur->m_state = TREM;
+        cur->m_state = TERM;
     }  catch (std::exception& e) {
         cur->m_state = EXCEPT;
         SYLAR_LOG_ERROR(g_logger) << "Fiber Except: " << e.what()
@@ -243,7 +244,7 @@ void Fiber::CallerMainFunc() {
     auto raw_ptr = cur.get();
     cur.reset();
 
-    // 需要切回主协程
+    // caller 线程中调度协程切回主协程(main函数)
     raw_ptr->back();
 
     SYLAR_ASSERT2(false, 

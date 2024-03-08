@@ -118,22 +118,21 @@ private:
         }
     };
 private:
-    MutexType m_mutex;
-    std::vector<Thread::ptr> m_threads;
-    std::list<FiberAndThread> m_fibers;         // 即将执行的协程
-    // std::map<int, std::list<FiberAndThread>> m_thrFibers; 
-    Fiber::ptr m_rootFiber;                 // 主协程
-    std::string m_name;
+    MutexType m_mutex;                                  // 互斥锁
+    std::vector<Thread::ptr> m_threads;                 // 线程池
+    std::list<FiberAndThread> m_fibers;                 // 即将执行的协程
+    Fiber::ptr m_rootFiber;                             // caller 线程中的调度协程
+    std::string m_name;                                 // 协程调度器名称
 
 protected:
     // 线程状态
-    std::vector<int> m_threadIds;       // 线程 id
-    size_t m_threadCount = 0;           // 总线程数
-    std::atomic<size_t> m_activeThreadCount = {0};     // 活跃线程数
-    std::atomic<size_t> m_idleThreadCount = {0};       // 空闲线程数
-    bool m_stopping = true;             // 默认不启动       
-    bool m_autoStop = false;            // 
-    int m_rootThread = 0;               // 主线程 id et. use_caller's id
+    std::vector<int> m_threadIds;                       // 线程 id
+    size_t m_threadCount = 0;                           // 总线程数
+    std::atomic<size_t> m_activeThreadCount = {0};      // 活跃线程数
+    std::atomic<size_t> m_idleThreadCount = {0};        // 空闲线程数
+    bool m_stopping = true;                             // 是否正在停止       
+    bool m_autoStop = false;                            // 
+    int m_rootThread = 0;                               // user_caller = true 时调度器所在的 id 
 };
 
 class SchedulerSwitcher : public NonCopyable {

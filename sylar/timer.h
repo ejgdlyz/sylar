@@ -29,9 +29,9 @@ private:
    
 private:
     bool m_recurrring = false;              // 是否是循环定时器
-    uint64_t m_ms = 0;                      // 时间周期
+    uint64_t m_ms = 0;                      // 执行周期
     uint64_t m_next = 0;                    // 精确的执行时间 （循环定时器：当前时间 + 定时时间）
-    std::function<void()> m_cb;             // 定时器执行的任务
+    std::function<void()> m_cb;             // 定时器执行的任务回调
     TimerManager* m_manager = nullptr;      // 当前 timer 属于哪个 TimerManager
     
 private:
