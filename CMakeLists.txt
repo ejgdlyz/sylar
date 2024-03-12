@@ -83,7 +83,7 @@ set(LIBS
 # message("***", ${LIBS})
 
 # option(TEST "ON for complile test" OFF)
-set(TEST ON)
+set(TEST OFF)
 if(TEST)
 sylar_add_executable(test_logger "tests/test_logger.cc" sylar "${LIBS}")
 sylar_add_executable(test_config "tests/test_config.cc" sylar "${LIBS}")
