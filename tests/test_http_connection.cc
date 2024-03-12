@@ -7,18 +7,18 @@ static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 
 // 连接池测试
 void test_connection_pool() {
-    sylar::http::HttpConnectionPool::ptr pool(new sylar::http::HttpConnectionPool("www.sylar.top", "", false, 80, 10, 1000 * 30, 5));
+    sylar::http::HttpConnectionPool::ptr pool(new sylar::http::HttpConnectionPool("www.sylar.top"
+            , "", false, 80, 10, 1000 * 30, 5));
 
     sylar::IOManager::GetThis()->addTimer(1000, [pool](){  // 每秒发一次
         auto r = pool->doGet("/", 300);
-        SYLAR_LOG_INFO(g_logger) << std::endl 
-        << r->toString(); 
+        SYLAR_LOG_INFO(g_logger) << std::endl << r->toString(); 
     }, true);
 }
 
 void run_test_http_connection() {
-    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("www.sylar.top:80");
-    // sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("127.0.0.1:9800");
+    // sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("www.sylar.top:80");
+    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("127.0.0.1:9800");
 
     if (!addr) {
         SYLAR_LOG_INFO(g_logger) << "get addr error";
@@ -82,10 +82,10 @@ int main(int argc, char const *argv[]) {
     // sylar::IOManager iom(2);
     sylar::IOManager iom;
     
-    // iom.schedule(run_test_http_connection);
+    iom.schedule(run_test_http_connection);
     
     // iom.schedule(run_test_http_connection_simple);
     
-    iom.schedule(test_https);
+    // iom.schedule(test_https);
     return 0;
 }

@@ -31,7 +31,7 @@ int SocketStream::read(ByteArray::ptr ba, size_t length) {
         return -1;
     }
     std::vector<iovec> iovs;
-    ba->getWriteBuffers(iovs, length);
+    ba->getWriteBuffers(iovs, length);  // iovs 指向 ByteArray 中的内存块，通过 iovec 向 ByteArray 写数据
     int rt = m_socket->recv(&iovs[0], iovs.size());
     if (rt > 0) {
         ba->setPosition(ba->getPosition() + rt);
@@ -52,10 +52,10 @@ int SocketStream::write(ByteArray::ptr ba, size_t length) {
         return -1;
     }
     std::vector<iovec> iovs;
-    ba->getReadBuffers(iovs, length);  // 从 ByteArray 读出需要的数据
+    ba->getReadBuffers(iovs, length);               // 从 ByteArray 读出需要的数据
     int rt =  m_socket->send(&iovs[0], iovs.size());
     if (rt > 0) {
-        ba->setPosition(ba->getPosition() + rt);  // 需要修改位置
+        ba->setPosition(ba->getPosition() + rt);    // 需要修改位置
     }
     return rt;
 }        

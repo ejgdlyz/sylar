@@ -154,7 +154,7 @@ void ByteArray::writeUint32(uint32_t value) {
         value >>= 7;
     }
     tmp[i++] = value;
-    write(tmp, i);
+    write(tmp, i);      // i 是 value 被压缩后的字节数
 }
 
 void ByteArray::writeInt64(int64_t value) {
@@ -287,7 +287,7 @@ uint64_t ByteArray::readUint64() {
     for (int i = 0; i < 32; i += 7) {
         uint8_t b = readFuint8();
         if (b < 0x80) {
-            result |= ((uint64_t)b) << i;
+            result |= ((uint64_t)b) << i;       // b 先左移，再与 result 或运算
             break;
         } else {
             result |= (((uint64_t)(b & 0x7f)) << i);
@@ -672,7 +672,7 @@ uint64_t ByteArray::getWriteBuffers(std::vector<iovec>& buffers, uint64_t len) {
             ncap = cur->size;
             npos = 0;
         }
-        buffers.push_back(iov);
+        buffers.push_back(iov);     // 拷贝 iovec 到 buffer
     }
     return size;
 }

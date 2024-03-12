@@ -11,7 +11,7 @@
 			// "program": "${workspaceFolder}/bin/test_logger",
 			// "program": "${workspaceFolder}/bin/test_config",
 			// "program": "${workspaceFolder}/bin/test_fiber",
-			"program": "${workspaceFolder}/bin/test_scheduler",
+			// "program": "${workspaceFolder}/bin/test_scheduler",
 			// "program": "${workspaceFolder}/bin/test_iomanager",
 			// "program": "${workspaceFolder}/bin/test_hook",
 			// "program": "${workspaceFolder}/bin/test_address",
@@ -19,7 +19,7 @@
 			// "program": "${workspaceFolder}/bin/test_http_parser",
 			// "program": "${workspaceFolder}/bin/echo_server",
 			// "program": "${workspaceFolder}/bin/test_http_server",
-			// "program": "${workspaceFolder}/bin/test_http_connection",
+			"program": "${workspaceFolder}/bin/test_http_connection",
 			// "program": "${workspaceFolder}/bin/test_daemon",
 			// "program": "${workspaceFolder}/bin/test_config_load",
 			// "program": "${workspaceFolder}/bin/test_application",
@@ -28,7 +28,7 @@
 			// "program": "${workspaceFolder}/bin/test_ws_server",
 
 			
-			"args": ["-s"],
+			"args": ["-t"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

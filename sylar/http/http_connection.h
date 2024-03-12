@@ -131,17 +131,17 @@ public:
 private:
     static void ReleasePtr(HttpConnection *ptr, HttpConnectionPool *pool);
 private:
-    std::string m_host;
-    std::string m_vhost;
-    uint32_t m_port;
-    uint32_t m_maxSize;
-    uint32_t m_maxAliveTime;
-    uint32_t m_maxRequest;
-    bool m_isHttps;
+    std::string m_host;                     // 服务 1
+    std::string m_vhost;                    // 服务 2
+    uint32_t m_port;                        // 端口号
+    uint32_t m_maxSize;                     // 连接池连接树上限
+    uint32_t m_maxAliveTime;                // 连接最大存在时间
+    uint32_t m_maxRequest;                  // 连接请求上限：
+    bool m_isHttps;                         // 是否为 https
 
-    MutexType m_mutex;
-    std::list<HttpConnection*> m_conns;
-    std::atomic<int32_t> m_total = {0};
+    MutexType m_mutex;                      // 互斥锁
+    std::list<HttpConnection*> m_conns;     // 存放连接
+    std::atomic<int32_t> m_total = {0};     // 超出连接池中的连接上限时，新建的连接数
 };
 
 }

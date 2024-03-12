@@ -5,7 +5,7 @@
 namespace sylar {
 
 sylar::ConfigVar<uint64_t>::ptr g_tcp_server_read_timeout = 
-    sylar::Config::Lookup("tcp_server.read_timeout", (uint64_t)(60 * 1000 * 2), "tcp server read timeout");  // 2mins
+    sylar::Config::Lookup("tcp_server.read_timeout", (uint64_t)(60 * 1000 * 2), "tcp server read timeout");  // 2 mins
 
 static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 

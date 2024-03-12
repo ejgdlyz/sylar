@@ -7,7 +7,7 @@ int Stream::readFixSize(void* buffer, size_t length) {
     size_t offset = 0;
     int64_t left = length;
     while (left > 0) {
-        int64_t len = read((char*)buffer + offset, left);
+        int64_t len = read((char*)buffer + offset, left);   // read() 为纯虚函数，由继承类实现
         if (len <= 0) {
             return len;
         }

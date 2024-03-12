@@ -25,7 +25,7 @@ HttpConnection::HttpConnection(Socket::ptr sock, bool owner)
 }
 
 HttpConnection::~HttpConnection() {
-    SYLAR_LOG_INFO(g_logger) << "HttpConnection::~HttpConnection";
+    SYLAR_LOG_DEBUG(g_logger) << "HttpConnection::~HttpConnection";
 }
 
 // 获取 HTTP Response 结构体

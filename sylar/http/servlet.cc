@@ -120,7 +120,7 @@ int32_t NotFoundServlet::handle(sylar::http::HttpRequest::ptr request
         ,sylar::http::HttpSession::ptr session) {
     
     response->setStatus(sylar::http::HttpStatus::NOT_FOUND);
-    response->setHeader("Server:", "sylar/1.0.0");
+    // response->setHeader("Server:", "sylar/1.0.0");
     response->setHeader("Content-Type:", "text/html");
     response->setBody(m_content);
     return 0;  // 正常

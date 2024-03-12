@@ -5,13 +5,13 @@
 #include "sylar/socket.h"
 #include "sylar/bytearray.h"
 
-static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
+static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 
 class EchoServer : public sylar::TcpServer {
 public:
     // typedef std::shared_ptr<EchoServer> ptr;
     EchoServer(int type);
-    void handleClient(sylar::Socket::ptr client);
+    void handleClient(sylar::Socket::ptr client) override;
 private:
     int m_type = 1;  // 1: 文本形式, 0: 二进制形式
 };
@@ -27,7 +27,7 @@ void EchoServer::handleClient(sylar::Socket::ptr client) {
     while (true) {
         ba->clear();
         std::vector<iovec> iovs;
-        ba->getWriteBuffers(iovs, 1024);
+        ba->getWriteBuffers(iovs, 1024);            // iovs 指向 ByteArray 中的内存块，通过 iovec 向 ByteArray 写数据
 
         int rt = client->recv(&iovs[0], iovs.size());
         if (rt == 0) {
@@ -79,7 +79,7 @@ int main(int argc, char const *argv[]) {
         type = 0;
     }
 
-    sylar::IOManager iom(2);  // 1 个线程方便 debug
+    sylar::IOManager iom(1);  // 1 个线程方便 debug
     iom.schedule(run);
     return 0;
 }
