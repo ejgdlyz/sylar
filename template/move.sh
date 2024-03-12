@@ -1,7 +1,7 @@
 #!/bin/sh
-# 将一个项目(库或可执行文件)复制到特定的目录
 
-if [ ! -d bin/module]                       # -d 检查 bin/module 是否存在, ! 即不存在 
+# 将一个项目(库或可执行文件)复制到特定的目录
+if [ ! -d bin/module ]                       # -d 检查 bin/module 是否存在, ! 即不存在 
 then 
     mkdir bin/module
 else 

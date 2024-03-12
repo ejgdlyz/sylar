@@ -12,6 +12,8 @@ include_directories(.)
 include_directories(/usr/local/include)  # yaml-cpp
 link_directories(/usr/local/lib)  # 类库
 
+option(TEST "ON for complile test" OFF)
+
 find_package(Boost REQUIRED)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
@@ -82,8 +84,6 @@ set(LIBS
 
 # message("***", ${LIBS})
 
-# option(TEST "ON for complile test" OFF)
-set(TEST OFF)
 if(TEST)
 sylar_add_executable(test_logger "tests/test_logger.cc" sylar "${LIBS}")
 sylar_add_executable(test_config "tests/test_config.cc" sylar "${LIBS}")
