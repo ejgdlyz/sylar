@@ -29,7 +29,7 @@ command_error_exit mv template ${namespace}
 command_error_exit sed -i "s/project_name/${project_name}/g" CMakeLists.txt # 将 CMakeLists.txt 文件中的所有出现 project_name 替换为 $project_name
 command_error_exit sed -i "s/template/${namespace}/g" CMakeLists.txt       
 command_error_exit sed -i "s/project_name/${project_name}/g" move.sh
-command_error_exit cd ${namespace}                                          # 进入 ${namespace}
+command_error_exit cd ../bin/conf                                         # 进入 ${namespace}
 command_error_exit sed -i "s/name_space/${namespace}/g" `ls .`              # 将 ${namespace} 下所有文件中出现的 name_space 替换为 ${namespace}
 command_error_exit sed -i "s/project_name/${project_name}/g" `ls .`         
 
