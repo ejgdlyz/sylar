@@ -151,7 +151,7 @@ int Application::run_fiber() {
     // server 放在协程里初始化
     auto http_confs = g_servers_conf->getValue();
     for (auto& conf : http_confs) {
-        SYLAR_LOG_INFO(g_logger) << std::endl << LexicalCast<TcpServerConf, std::string>()(conf);  // HttpServerConf -> string
+        // SYLAR_LOG_INFO(g_logger) << std::endl << LexicalCast<TcpServerConf, std::string>()(conf);  // HttpServerConf -> string
         
         std::vector<Address::ptr> p_addrs;
         for(auto& addr : conf.address) {
