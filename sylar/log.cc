@@ -390,7 +390,6 @@ bool FileLogAppender::reopen() {
     if (m_filestream) {
         m_filestream.close();
     }
-    m_filestream.open(m_filename);
     // return !!m_filestream;
     return FSUtil::OpenForWrite(m_filestream, m_filename, std::ios::app);
 }
@@ -663,6 +662,9 @@ public:
                     
                 } else if (type == "StdoutLogAppender") {
                     lad.type = 2;
+                    if (a["formatter"].IsDefined()) {
+                        lad.formatter = a["formatter"].as<std::string>();
+                    }
                 } else {
                     std::cout << "log config error: appender:type is invalid, " << a << std::endl;
                     throw std::logic_error("log config appender:type is invalid");
@@ -685,7 +687,7 @@ public:
         if (ld.level != LogLevel::UNKNOWN) {
             n["level"] = LogLevel::ToString(ld.level);
         }
-        if (!ld.formatter.empty()) {
+        if (ld.formatter.empty()) {
             n["formatter"] = ld.formatter;
         }
 
