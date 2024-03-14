@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <boost/lexical_cast.hpp>
 #include "sylar/util/hash_util.h"
+#include "sylar/util/json_util.h"
+
 
 namespace sylar {
 
